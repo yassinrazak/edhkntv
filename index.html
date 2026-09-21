@@ -29,7 +29,7 @@
             overflow: hidden;
         }
         
-        /* ================= HEADER ================= */
+/* ================= HEADER ================= */
         header {
             background-color: #1e293b;
             color: white;
@@ -46,8 +46,9 @@
             align-items: center;
             gap: 15px;
         }
+        /* SAIZ LOGO DIKEMASKINI DI SINI */
         .header-left img {
-            height: 60px;
+            height: 40px; /* Saiz logo dikecilkan */
             width: auto;
             object-fit: contain;
             background: white;
@@ -201,7 +202,6 @@
         .quran-arabic { font-size: 38px; font-family: 'Amiri', serif; margin-bottom: 5px; }
         .quran-malay { font-size: 20px; color: white; }
 
-        /* Kesan Animasi Fade In */
         .fade-in { animation: fadeInEffect 1.5s ease-in-out; }
         
         @keyframes fadeInEffect {
@@ -218,7 +218,6 @@
 </head>
 <body>
 
-    <!-- Header dengan Logo Bersebelahan Title -->
     <header>
         <div class="header-left">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'"> 
@@ -232,50 +231,32 @@
     </header>
 
     <div class="main-container">
-        <!-- Panel Kiri: Video -->
         <div class="left-panel">
             <div class="card video-container">
-                <iframe 
-                    src="https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1" 
-                    allow="autoplay; encrypted-media" 
-                    allowfullscreen>
-                </iframe>
+                <!-- Pemain YouTube dinamik -->
+                <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- Panel Kanan: Solat -->
         <div class="right-panel">
             <div class="card solat-container">
                 <h2>Waktu Solat</h2>
-                <div class="solat-grid" id="solat-times"></div>
+                <div class="solat-grid" id="solat-times">
+                    <div style="color: white; grid-column: span 2; text-align: center;">Memuat turun jadual solat...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Data Pesakit -->
     <div class="patient-section">
-        <h2 class="section-title">BILANGAN PESAKIT TERKINI</h2>
+        <h2 class="section-title">BILANGAN PESAKIT</h2>
         <div class="zones-container">
-            <div class="zone-card zone-red">
-                <h3>Zon Merah</h3>
-                <div class="count" id="count-red">-</div>
-            </div>
-            <div class="zone-card zone-yellow">
-                <h3>Zon Kuning</h3>
-                <div class="count" id="count-yellow">-</div>
-            </div>
-            <div class="zone-card zone-green">
-                <h3>Zon Hijau</h3>
-                <div class="count" id="count-green">-</div>
-            </div>
-            <div class="zone-card zone-asthma">
-                <h3>Asthma Bay</h3>
-                <div class="count" id="count-asthma">-</div>
-            </div>
-            <div class="zone-card zone-obs">
-                <h3>Observation Bay</h3>
-                <div class="count" id="count-obs">-</div>
-            </div>
+            <div class="zone-card zone-red"><h3>Zon Merah</h3><div class="count" id="count-red">-</div></div>
+            <div class="zone-card zone-yellow"><h3>Zon Kuning</h3><div class="count" id="count-yellow">-</div></div>
+            <div class="zone-card zone-green"><h3>Zon Hijau</h3><div class="count" id="count-green">-</div></div>
+            <div class="zone-card zone-asthma"><h3>Asthma Bay</h3><div class="count" id="count-asthma">-</div></div>
+            <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
         </div>
     </div>
 
@@ -290,7 +271,9 @@
     <audio id="azan-biasa" src="azan_biasa.mp3"></audio>
 
     <script>
+        // =======================================
         // 1. MASA & TARIKH
+        // =======================================
         function updateClock() {
             const now = new Date();
             const hariMelayu = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
@@ -303,8 +286,9 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // =======================================
         // 2. DATA PESAKIT (Google Sheets)
-        // PASTIKAN LETAK URL WEB APP GOOGLE SCRIPT ANDA DI SINI (JANGAN LUPA)
+        // =======================================
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwp7EyAK5nTF2VUDIUNyaVc4QpcoWoi0bI3BKU0pvgTSA_6NoGjEKd-JGKv8KW7B3XU/exec"; 
 
         async function fetchPatientData() {
@@ -325,24 +309,46 @@
         setInterval(fetchPatientData, 10000);
         fetchPatientData();
 
+        // =======================================
         // 3. WAKTU SOLAT & AZAN
-        const solatData = { 
-            "Subuh": "05:55", 
-            "Zohor": "13:15", 
-            "Asar": "16:25", 
-            "Maghrib": "19:15", 
-            "Isyak": "20:25" 
-        };
+        // =======================================
+        let solatData = {};
         let azanPlayedToday = {};
+
+        async function fetchWaktuSolat() {
+            try {
+                const url = "https://api.aladhan.com/v1/timingsByCity?city=Kuala%20Nerang&country=Malaysia";
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const timings = data.data.timings;
+                    solatData = {
+                        "Subuh": timings.Fajr,
+                        "Zohor": timings.Dhuhr,
+                        "Asar": timings.Asr,
+                        "Maghrib": timings.Maghrib,
+                        "Isyak": timings.Isha
+                    };
+                    renderSolat(); 
+                }
+            } catch (error) {
+                console.error("Gagal mendapatkan API waktu solat:", error);
+            }
+        }
 
         function renderSolat() {
             const container = document.getElementById('solat-times');
             container.innerHTML = ""; 
             for (let [name, time] of Object.entries(solatData)) {
                 container.innerHTML += `<div class="solat-item" id="solat-${name}">${name}<br>${time}</div>`;
-                azanPlayedToday[name] = false;
+                if (azanPlayedToday[name] === undefined) {
+                    azanPlayedToday[name] = false;
+                }
             }
         }
+
+        fetchWaktuSolat();
 
         function checkAzan() {
             const now = new Date();
@@ -362,14 +368,63 @@
                     setTimeout(() => document.getElementById(`solat-${name}`).classList.remove('active'), 180000);
                 }
             }
+            
             if (currentHourMin === "00:00") {
-                for(let key in azanPlayedToday) { azanPlayedToday[key] = false; }
+                if (azanPlayedToday["Subuh"] !== false) { 
+                    for(let key in azanPlayedToday) { azanPlayedToday[key] = false; }
+                    fetchWaktuSolat();
+                }
             }
         }
-        renderSolat();
         setInterval(checkAzan, 20000);
 
-        // 4. AYAT QURAN (10 Ayat, Bertukar Setiap 2 Minit)
+        // =======================================
+        // 4. PENJADUALAN YOUTUBE DINAMIK
+        // =======================================
+        
+        // Pautan Asal (Contoh: Playlist KKM)
+        const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
+        
+        // Pautan Khas untuk waktu (1-2pm, 4-5pm, 7-8pm, 5-7am)
+        // SILA GANTIKAN "ID_VIDEO_DI_SINI" DENGAN ID YOUTUBE PILIHAN ANDA
+        const linkKhas = "https://www.youtube.com/watch?v=eC4LfEVxvKg?autoplay=1&loop=1";
+        
+        let statusVideoSemasa = "";
+
+        function semakJadualYoutube() {
+            const jamSemasa = new Date().getHours(); // Format 24-Jam (0 hingga 23)
+            const player = document.getElementById('youtube-player');
+            
+            // Senarai masa khas (Jam 5, 6, 13, 16, 19)
+            // 5, 6 = 5:00 AM - 6:59 AM
+            // 13 = 1:00 PM - 1:59 PM
+            // 16 = 4:00 PM - 4:59 PM
+            // 19 = 7:00 PM - 7:59 PM
+            const waktuKhas = [5, 6, 13, 16, 19];
+            
+            if (waktuKhas.includes(jamSemasa)) {
+                if (statusVideoSemasa !== "khas") {
+                    player.src = linkKhas;
+                    statusVideoSemasa = "khas";
+                    console.log("Menukar ke jadual video khas");
+                }
+            } else {
+                if (statusVideoSemasa !== "asal") {
+                    player.src = linkAsal;
+                    statusVideoSemasa = "asal";
+                    console.log("Menukar ke jadual video asal");
+                }
+            }
+        }
+        
+        // Semak jadual youtube setiap 1 minit (60,000 milisaat)
+        setInterval(semakJadualYoutube, 60000);
+        semakJadualYoutube(); // Panggil fungsi terus bila dibuka
+
+
+        // =======================================
+        // 5. AYAT QURAN (Bertukar Setiap 2 Minit)
+        // =======================================
         const quranVerses = [
             { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
             { ar: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ", ms: "Dan apabila aku sakit, maka Dialah yang menyembuhkan penyakitku. (Asy-Syu'ara: 80)" },
@@ -390,23 +445,18 @@
             const arElement = document.getElementById('quran-arabic');
             const msElement = document.getElementById('quran-malay');
             
-            // Buang class animasi sementara
             arElement.classList.remove('fade-in');
             msElement.classList.remove('fade-in');
             
-            // Trick untuk paksa browser mula semula animasi (Reflow)
             void arElement.offsetWidth; 
             
-            // Masukkan teks baharu
             arElement.innerText = quranVerses[currentVerse].ar;
             msElement.innerText = quranVerses[currentVerse].ms;
             
-            // Masukkan class animasi semula
             arElement.classList.add('fade-in');
             msElement.classList.add('fade-in');
         }
         
-        // Tukar setiap 2 minit (120,000 milisaat)
         setInterval(updateQuran, 120000);
 
     </script>
