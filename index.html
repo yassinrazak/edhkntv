@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Unit Kecemasan & Trauma Hospital Kuala Nerang</title>
+    <!-- Font Arab & Moden -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --red-zone: #e74c3c;
+            --yellow-zone: #f1c40f;
+            --green-zone: #2ecc71;
+            --asthma-bay: #3498db;
+            --obs-bay: #9b59b6;
+            --islamic-dark: #064e3b; /* Hijau Gelap */
+            --islamic-gold: #fbbf24; /* Emas */
+        }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* ================= HEADER ================= */
+        header {
+            background-color: #1e293b;
+            color: white;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        /* Style Logo */
+        .header-left img {
+            height: 55px; /* Ketinggian logo */
+            width: auto;
+            background: white;
+            padding: 3px;
+            border-radius: 50%; /* Jadikan logo bulat (optional) */
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .header-title-text {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .datetime-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .time { color: var(--islamic-gold); font-size: 24px; font-weight: bold; }
+        
+        /* ================= MAIN LAYOUT ================= */
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 15px 20px;
+            gap: 20px;
+        }
+        .left-panel { flex: 6.5; display: flex; flex-direction: column; }
+        .right-panel { flex: 3.5; display: flex; flex-direction: column; }
+        
+        .card {
+            background: var(--card-bg); 
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+            padding: 15px;
+            height: 100%;
+        }
+        
+        /* ================= YOUTUBE ================= */
+        .video-container { padding: 0; overflow: hidden; border: 3px solid white; }
+        .video-container iframe { 
+            width: 100%; 
+            height: 100%; 
+            min-height: 380px; 
+            border-radius: 12px; 
+            border: none; 
+        }
+        
+        /* ================= WAKTU SOLAT (ISLAMIC MODERN) ================= */
+        .solat-container {
+            /* Latar belakang Hijau Zamrud dengan corak Geometri CSS */
+            background-color: var(--islamic-dark);
+            background-image: radial-gradient(rgba(251, 191, 36, 0.15) 2px, transparent 2px), 
+                              radial-gradient(rgba(251, 191, 36, 0.1) 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            border: 2px solid var(--islamic-gold);
+            position: relative;
+        }
+        .solat-container h2 { 
+            margin-top: 0; 
+            color: var(--islamic-gold); 
+            text-align: center; 
+            font-family: 'Amiri', serif;
+            font-size: 32px;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+            padding-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .solat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-top: 15px; 
+        }
+        .solat-item {
+            /* Efek Glassmorphism */
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: white;
+            padding: 15px; 
+            border-radius: 12px;
+            text-align: center; 
+            font-size: 22px; 
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .solat-item.active { 
+            background: var(--islamic-gold); 
+            color: var(--islamic-dark); 
+            border: 1px solid white;
+            animation: pulse-gold 2s infinite; 
+            transform: scale(1.05);
+        }
+        
+        /* ================= DATA PESAKIT ================= */
+        .patient-section {
+            padding: 0 20px;
+            text-align: center;
+        }
+        .section-title {
+            display: inline-block;
+            background: #1e293b;
+            color: white;
+            padding: 5px 30px;
+            border-radius: 20px;
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .zones-container { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 20px; 
+            padding-bottom: 20px;
+        }
+        .zone-card { 
+            color: white; 
+            padding: 20px 10px; 
+            border-radius: 15px; 
+            text-align: center; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+            position: relative;
+            overflow: hidden;
+        }
+        .zone-card h3 { margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 700; }
+        .zone-card .count { font-size: 60px; font-weight: bold; margin-top: 5px; line-height: 1; }
+        
+        /* Warna Zon */
+        .zone-red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .zone-yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); color: #2c3e50; }
+        .zone-green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        
+        /* ================= FOOTER QURAN ================= */
+        footer { 
+            background-color: var(--islamic-dark); 
+            color: var(--islamic-gold); 
+            padding: 15px; 
+            text-align: center; 
+            border-top: 3px solid var(--islamic-gold);
+        }
+        .quran-arabic { font-size: 38px; font-family: 'Amiri', serif; margin-bottom: 5px; }
+        .quran-malay { font-size: 20px; color: white; }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+            70% { box-shadow: 0 0 20px 15px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header dengan Logo -->
+    <header>
+        <div class="header-left">
+            <!-- PENTING: Sila letak fail logo anda sebagai "logo.png" dalam folder yang sama -->
+            <img src="logo.png" alt="Logo KKM/Hospital" onerror="this.style.display='none'"> 
+            <div class="header-title-text">UNIT KECEMASAN DAN TRAUMA HOSPITAL KUALA NERANG</div>
+        </div>
+        <div class="datetime-container">
+            <span id="current-day">Isnin</span>, 
+            <span id="current-date">01 Januari 2024</span>
+            <span class="time" id="current-time">00:00:00 AM</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Panel Kiri: Video -->
+        <div class="left-panel">
+            <div class="card video-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&mute=1&loop=1" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Panel Kanan: Solat Islamic Modern -->
+        <div class="right-panel">
+            <div class="card solat-container">
+                <h2>Waktu Solat</h2>
+                <div class="solat-grid" id="solat-times">
+                    <!-- Data solat diisi oleh Javascript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Pesakit -->
+    <div class="patient-section">
+        <h2 class="section-title">BILANGAN PESAKIT</h2>
+        <div class="zones-container">
+            <div class="zone-card zone-red">
+                <h3>Zon Merah</h3>
+                <div class="count" id="count-red">-</div>
+            </div>
+            <div class="zone-card zone-yellow">
+                <h3>Zon Kuning</h3>
+                <div class="count" id="count-yellow">-</div>
+            </div>
+            <div class="zone-card zone-green">
+                <h3>Zon Hijau</h3>
+                <div class="count" id="count-green">-</div>
+            </div>
+            <div class="zone-card zone-asthma">
+                <h3>Asthma Bay</h3>
+                <div class="count" id="count-asthma">-</div>
+            </div>
+            <div class="zone-card zone-obs">
+                <h3>Observation Bay</h3>
+                <div class="count" id="count-obs">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Quran -->
+    <footer>
+        <div class="quran-arabic" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div class="quran-malay" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
+    </footer>
+
+    <!-- Audio Azan -->
+    <audio id="azan-subuh" src="azan_subuh.mp3"></audio>
+    <audio id="azan-biasa" src="azan_biasa.mp3"></audio>
+
+    <script>
+        // 1. MASA & TARIKH
+        function updateClock() {
+            const now = new Date();
+            const hariMelayu = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+            const bulanMelayu = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+            
+            document.getElementById('current-day').innerText = hariMelayu[now.getDay()];
+            document.getElementById('current-date').innerText = `${now.getDate()} ${bulanMelayu[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: true });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. DATA PESAKIT (Google Sheets)
+        // PASTIKAN LETAK URL WEB APP GOOGLE SCRIPT ANDA DI SINI
+        const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwp7EyAK5nTF2VUDIUNyaVc4QpcoWoi0bI3BKU0pvgTSA_6NoGjEKd-JGKv8KW7B3XU/exec"; 
+
+        async function fetchPatientData() {
+            if(googleSheetUrl === "LETAK_URL_GOOGLE_SCRIPT_ANDA_DI_SINI") return;
+            try {
+                const response = await fetch(googleSheetUrl);
+                const data = await response.json();
+                
+                document.getElementById('count-red').innerText = data.merah;
+                document.getElementById('count-yellow').innerText = data.kuning;
+                document.getElementById('count-green').innerText = data.hijau;
+                document.getElementById('count-asthma').innerText = data.asthma;
+                document.getElementById('count-obs').innerText = data.obs;
+            } catch (error) {
+                console.error("Gagal baca Google Sheets:", error);
+            }
+        }
+        setInterval(fetchPatientData, 10000);
+        fetchPatientData();
+
+        // 3. WAKTU SOLAT & AZAN
+        // Waktu statik sebagai contoh
+        const solatData = { 
+            "Subuh": "05:55", 
+            "Zohor": "13:15", 
+            "Asar": "16:25", 
+            "Maghrib": "19:15", 
+            "Isyak": "20:25" 
+        };
+        let azanPlayedToday = {};
+
+        function renderSolat() {
+            const container = document.getElementById('solat-times');
+            container.innerHTML = ""; 
+            for (let [name, time] of Object.entries(solatData)) {
+                container.innerHTML += `<div class="solat-item" id="solat-${name}">${name}<br>${time}</div>`;
+                azanPlayedToday[name] = false;
+            }
+        }
+
+        function checkAzan() {
+            const now = new Date();
+            const currentHourMin = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
+            for (let [name, time] of Object.entries(solatData)) {
+                if (currentHourMin === time && !azanPlayedToday[name]) {
+                    document.getElementById(`solat-${name}`).classList.add('active');
+                    
+                    if (name === "Subuh") {
+                        document.getElementById('azan-subuh').play();
+                    } else {
+                        document.getElementById('azan-biasa').play();
+                    }
+                    
+                    azanPlayedToday[name] = true;
+                    setTimeout(() => document.getElementById(`solat-${name}`).classList.remove('active'), 180000);
+                }
+            }
+            if (currentHourMin === "00:00") {
+                for(let key in azanPlayedToday) { azanPlayedToday[key] = false; }
+            }
+        }
+        renderSolat();
+        setInterval(checkAzan, 20000);
+
+        // 4. AYAT QURAN (Tukar 5 minit)
+        const quranVerses = [
+            { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
+            { ar: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ", ms: "Dan apabila aku sakit, maka Dialah yang menyembuhkan penyakitku. (Asy-Syu'ara: 80)" },
+            { ar: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", ms: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya. (Al-Baqarah: 286)" }
+        ];
+        let currentVerse = 0;
+
+        function updateQuran() {
+            currentVerse = (currentVerse + 1) % quranVerses.length;
+            document.getElementById('quran-arabic').innerText = quranVerses[currentVerse].ar;
+            document.getElementById('quran-malay').innerText = quranVerses[currentVerse].ms;
+        }
+        setInterval(updateQuran, 300000);
+    </script>
+</body>
+</html>
