@@ -55,43 +55,41 @@
         }
         .time { color: var(--islamic-gold); font-size: 20px; font-weight: bold; }
         
-        /* ================= MAIN LAYOUT (60% / 20% / 20%) ================= */
+        /* ================= MAIN LAYOUT ================= */
         .main-container {
             display: flex; flex: 1; min-height: 0; padding: 15px; gap: 15px;
         }
-        .panel-youtube { flex: 6; display: flex; flex-direction: column; height: 100%; }
-        .panel-solat   { flex: 2; display: flex; flex-direction: column; height: 100%; }
-        .panel-petugas { flex: 2; display: flex; flex-direction: column; height: 100%; }
+        .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; }
+        .right-panel { flex: 2; display: flex; flex-direction: column; height: 100%; }
         
-        /* ================= YOUTUBE (60%) ================= */
+        /* ================= YOUTUBE ================= */
         .video-container { 
-            background: #000; border-radius: 10px;
+            background: var(--card-bg); border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0; overflow: hidden; 
             border: 2px solid white; height: 100%; display: flex; box-sizing: border-box;
-            position: relative;
         }
         .video-container iframe { width: 100%; height: 100%; border: none; }
         
-        /* ================= WAKTU SOLAT (20%) ================= */
+        /* ================= WAKTU SOLAT ================= */
         .solat-container {
             background-color: var(--islamic-dark);
             background-image: radial-gradient(rgba(251, 191, 36, 0.15) 1px, transparent 1px), 
                               radial-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px);
             background-size: 20px 20px; background-position: 0 0, 10px 10px;
             border: 2px solid var(--islamic-gold); border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 15px;
             height: 100%; box-sizing: border-box; display: flex; flex-direction: column;
         }
         .solat-container h2 { 
-            margin: 0 0 8px 0; color: var(--islamic-gold); text-align: center; 
-            font-size: 15px; line-height: 1.2; border-bottom: 1px solid rgba(251, 191, 36, 0.3);
-            padding-bottom: 8px; flex-shrink: 0; 
+            margin: 0 0 10px 0; color: var(--islamic-gold); text-align: center; 
+            font-size: 16px; line-height: 1.3; border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            padding-bottom: 10px; flex-shrink: 0; 
         }
-        .solat-grid { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 4px; }
+        .solat-grid { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 6px; }
         .solat-item {
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(251, 191, 36, 0.3);
-            color: white; padding: 10px 4px; border-radius: 8px; text-align: center; 
-            font-size: 15px; font-weight: 600; transition: all 0.3s ease;
+            color: white; padding: 12px 5px; border-radius: 8px; text-align: center; 
+            font-size: 16px; font-weight: 600; transition: all 0.3s ease;
         }
         .solat-item.active { animation: berkelip-merah 1.5s infinite; color: white; font-weight: bold; }
         
@@ -100,50 +98,31 @@
             50% { background-color: #8b0000; box-shadow: none; border-color: #ff0000; transform: scale(1); }
             100% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; border-color: white; transform: scale(1.05); }
         }
-
-        /* ================= PEGAWAI BERTUGAS (20%) ================= */
-        .petugas-container {
-            background: #1e293b; color: white; border: 2px solid #38bdf8;
-            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 12px;
-            height: 100%; box-sizing: border-box; display: flex; flex-direction: column;
-        }
-        .petugas-container h2 {
-            margin: 0 0 6px 0; color: #38bdf8; text-align: center;
-            font-size: 14px; line-height: 1.2; border-bottom: 1px solid rgba(56, 189, 248, 0.3);
-            padding-bottom: 6px; flex-shrink: 0; text-transform: uppercase;
-        }
-        .shift-tag {
-            background: #0284c7; color: white; font-size: 11px; font-weight: bold;
-            padding: 2px 8px; border-radius: 12px; text-align: center;
-            margin-bottom: 8px; flex-shrink: 0;
-        }
-        .petugas-list {
-            flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 6px;
-        }
-        .petugas-card {
-            background: rgba(255,255,255,0.07); border-left: 3px solid #38bdf8;
-            border-radius: 6px; padding: 6px 8px;
-        }
-        .petugas-role {
-            font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 2px;
-        }
-        .petugas-name {
-            font-size: 13px; color: #f8fafc; font-weight: 600; line-height: 1.2;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
         
         /* ================= BAHAGIAN BERTUKAR ================= */
         .rotating-section {
-            position: relative; height: 170px; flex-shrink: 0; 
-            overflow: hidden; box-sizing: border-box; display: block;
+            position: relative; 
+            height: 170px; 
+            flex-shrink: 0; 
+            overflow: hidden; 
+            box-sizing: border-box;
+            display: block;
         }
         .window-content { 
-            position: absolute; top: 0; left: 0; right: 0; height: 100%;
-            padding: 0 15px; opacity: 0; visibility: hidden;
+            position: absolute; 
+            top: 0; left: 0; right: 0; height: 100%;
+            padding: 0 15px; 
+            opacity: 0; 
+            visibility: hidden;
             transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
-            box-sizing: border-box; text-align: center;
+            box-sizing: border-box;
+            text-align: center;
         }
-        .window-content.active { opacity: 1; visibility: visible; z-index: 2; }
+        .window-content.active { 
+            opacity: 1; 
+            visibility: visible;
+            z-index: 2; 
+        }
         
         .section-title {
             display: inline-block; background: #1e293b; color: white;
@@ -171,12 +150,13 @@
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: var(--islamic-gold); padding: 0 30px; border-radius: 10px;
-            font-size: 32px; font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
+            font-size: 32px; 
+            font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
             display: flex; align-items: center; justify-content: center;
             text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* ================= FOOTER ================= */
+        /* ================= FOOTER QURAN DINAMIK ================= */
         footer { 
             background-color: var(--islamic-dark); color: var(--islamic-gold); text-align: center; 
             border-top: 3px solid var(--islamic-gold); display: flex; flex-direction: column; justify-content: center;
@@ -193,7 +173,7 @@
             .header-title-text { font-size: 16px; white-space: normal; }
             .datetime-container { width: 100%; justify-content: center; }
             .main-container { flex-direction: column; }
-            .panel-youtube, .panel-solat, .panel-petugas { flex: 1; width: 100%; }
+            .left-panel, .right-panel { flex: 1; width: 100%; }
             .video-container { min-height: 250px; }
             .solat-grid { grid-template-columns: repeat(3, 1fr); flex-direction: row; display: grid; }
             .rotating-section { height: 180px;}
@@ -221,15 +201,12 @@
     </header>
 
     <div class="main-container">
-        <!-- 60% YouTube -->
-        <div class="panel-youtube">
+        <div class="left-panel">
             <div class="video-container">
-                <iframe id="youtube-player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
-
-        <!-- 20% Waktu Solat -->
-        <div class="panel-solat">
+        <div class="right-panel">
             <div class="solat-container">
                 <h2>WAKTU SOLAT<br>DAERAH PADANG TERAP</h2>
                 <div class="solat-grid" id="solat-times">
@@ -237,32 +214,12 @@
                 </div>
             </div>
         </div>
-
-        <!-- 20% Pegawai Bertugas -->
-        <div class="panel-petugas">
-            <div class="petugas-container">
-                <h2>PEGAWAI BERTUGAS</h2>
-                <div class="shift-tag" id="shift-label">SYIF PAGI (8AM-3PM)</div>
-                <div class="petugas-list">
-                    <div class="petugas-card">
-                        <div class="petugas-role">Pegawai Perubatan</div>
-                        <div class="petugas-name" id="staff-dr">-</div>
-                    </div>
-                    <div class="petugas-card">
-                        <div class="petugas-role">Pen. Pegawai Perubatan</div>
-                        <div class="petugas-name" id="staff-ppp">-</div>
-                    </div>
-                    <div class="petugas-card">
-                        <div class="petugas-role">Jururawat Bertugas</div>
-                        <div class="petugas-name" id="staff-sn">-</div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- BAHAGIAN BERTUKAR -->
+    <!-- BAHAGIAN YANG BOLEH BERTUKAR (ROTATING SECTION) -->
     <div class="rotating-section" id="rotating-container">
+        
+        <!-- WINDOW 1: STATUS PESAKIT KEKAL DI SINI -->
         <div class="window-content active" id="window-1">
             <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
             <div class="zones-container">
@@ -273,9 +230,10 @@
                 <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
             </div>
         </div>
+
     </div>
 
-    <!-- FOOTER DINAMIK -->
+    <!-- FOOTER QURAN / MUTIARA KATA DINAMIK -->
     <footer>
         <div class="quran-arabic" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
         <div class="quran-malay" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
@@ -294,42 +252,34 @@
             document.getElementById('current-day').innerText = hariMelayu[now.getDay()];
             document.getElementById('current-date').innerText = `${now.getDate()} ${bulanMelayu[now.getMonth()]} ${now.getFullYear()}`;
             document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
-            
-            semakSyifPetugas();
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API
+        // 2. GOOGLE SHEETS API (Pesakit, Makluman & Footer)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwmbXtjpJ2oseN-664Xeqf6UgDOz83_fsHMtuS-4Fyese_qBUQ5nbFEC5lJ623b5Ry5/exec"; 
         
         let totalWindows = 1; 
         let currentWindow = 1;
         let semuaMakluman = [];
         let semuaFooterVerses = [];
-        let dataPetugas = null;
         let currentVerseIndex = 0;
         let cachedMaklumanStr = "[]"; 
 
         async function fetchPatientData() {
-            if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
+            if(googleSheetUrl === "LETAK_URL_GOOGLE_SCRIPT_ANDA_DI_SINI") return;
             try {
-                const response = await fetch(googleSheetUrl, { redirect: "follow" });
+                const response = await fetch(googleSheetUrl);
                 const data = await response.json();
                 
-                if(data.status === "error") {
-                    console.error("Apps Script Error:", data.message);
-                    return;
-                }
+                // Kemaskini Nombor Pesakit (Setiap 10 saat)
+                document.getElementById('count-red').innerText = data.merah;
+                document.getElementById('count-yellow').innerText = data.kuning;
+                document.getElementById('count-green').innerText = data.hijau;
+                document.getElementById('count-asthma').innerText = data.asthma;
+                document.getElementById('count-obs').innerText = data.obs;
 
-                // Pesakit
-                document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
-                document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
-                document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "-";
-                document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
-                document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
-
-                // Makluman (Lajur F)
+                // Kemaskini Makluman (Lajur F)
                 if (data.makluman && Array.isArray(data.makluman)) {
                     let newMaklumanStr = JSON.stringify(data.makluman);
                     if (newMaklumanStr !== cachedMaklumanStr) {
@@ -339,49 +289,16 @@
                     }
                 }
 
-                // Footer (Lajur G)
+                // Kemaskini Footer (Lajur G)
                 if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
                     semuaFooterVerses = data.footer;
                 }
-
-                // Petugas (Lajur H, I, J)
-                if (data.petugas) {
-                    dataPetugas = data.petugas;
-                    semakSyifPetugas();
-                }
             } catch (error) {
-                console.error("Gagal sambung ke Google Sheets:", error);
+                console.error("Gagal baca Google Sheets:", error);
             }
         }
         setInterval(fetchPatientData, 10000); 
         fetchPatientData();
-
-        // SEMAK SYIF PEGAWAI BERTUGAS
-        function semakSyifPetugas() {
-            if (!dataPetugas) return;
-            const hour = new Date().getHours();
-            let syifKey = "pagi";
-            let labelText = "SYIF PAGI (8AM - 3PM)";
-
-            if (hour >= 8 && hour < 15) {
-                syifKey = "pagi";
-                labelText = "SYIF PAGI (8AM - 3PM)";
-            } else if (hour >= 15 && hour < 22) {
-                syifKey = "petang";
-                labelText = "SYIF PETANG (3PM - 10PM)";
-            } else {
-                syifKey = "malam";
-                labelText = "SYIF MALAM (10PM - 8AM)";
-            }
-
-            const activeStaff = dataPetugas[syifKey];
-            if (activeStaff) {
-                document.getElementById('shift-label').innerText = labelText;
-                document.getElementById('staff-dr').innerText = activeStaff.dr || "-";
-                document.getElementById('staff-ppp').innerText = activeStaff.ppp || "-";
-                document.getElementById('staff-sn').innerText = activeStaff.sn || "-";
-            }
-        }
 
         // FUNGSI JANA MAKLUMAN RAWAK
         function janaPaparanMakluman() {
@@ -412,12 +329,13 @@
             totalWindows = 1 + maklumanTerpilih.length;
         }
 
-        // ROTASI PENGUMUMAN (15 SAAT)
+        // FUNGSI ROTASI PENGUMUMAN (15 SAAT)
         function swapWindows() {
             const windowSekarang = document.getElementById('window-' + currentWindow);
             if(windowSekarang) windowSekarang.classList.remove('active');
             
             currentWindow++;
+            
             if (currentWindow > totalWindows) {
                 currentWindow = 1; 
                 setTimeout(() => { janaPaparanMakluman(); }, 1500);
@@ -433,13 +351,16 @@
         }
         setInterval(swapWindows, 15000); 
 
-        // ROTASI FOOTER DINAMIK (2 MINIT)
+        // ==========================================
+        // FUNGSI ROTASI FOOTER DINAMIK (2 MINIT)
+        // ==========================================
         function updateQuran() {
             if (semuaFooterVerses.length === 0) return;
 
             const arElement = document.getElementById('quran-arabic');
             const msElement = document.getElementById('quran-malay');
             
+            // Memudarkan teks (Fade-Out)
             arElement.style.opacity = 0;
             msElement.style.opacity = 0;
             
@@ -447,22 +368,26 @@
                 currentVerseIndex = (currentVerseIndex + 1) % semuaFooterVerses.length;
                 let rawText = semuaFooterVerses[currentVerseIndex];
                 
+                // Semak jika ada simbol pemisah '~'
                 if (rawText.includes('~')) {
                     let parts = rawText.split('~');
                     arElement.innerText = parts[0].trim();
                     msElement.innerText = parts[1].trim();
                 } else {
-                    arElement.innerText = ""; 
+                    arElement.innerText = ""; // Kosongkan bahagian Arab jika teks biasa
                     msElement.innerText = rawText.trim();
                 }
                 
+                // Timbulkan semula teks (Fade-In)
                 arElement.style.opacity = 1;
                 msElement.style.opacity = 1;
             }, 1500); 
         }
-        setInterval(updateQuran, 120000); 
+        setInterval(updateQuran, 120000); // Bertukar setiap 2 minit (120,000ms)
 
+        // ====================================================
         // 3. WAKTU SOLAT & AZAN (e-SOLAT JAKIM : ZON KDH03)
+        // ====================================================
         let solatData = {};
         let azanPlayedToday = {};
 
@@ -518,12 +443,11 @@
         }
         setInterval(checkAzan, 20000);
 
-        // 4. PENJADUALAN YOUTUBE (Format Pautan Dibaiki)
-        const videoAsalID = "AaBF4oKLQZs";
-        const videoKhasID = "eC4LfEVxvKg";
-        
-        const linkAsal = `https://www.youtube.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1`;
-        const linkKhas = `https://www.youtube.com/embed/${videoKhasID}?autoplay=1&mute=1&loop=1&playlist=${videoKhasID}&enablejsapi=1`;
+        // ==========================================
+        // 4. PENJADUALAN YOUTUBE
+        // ==========================================
+        const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
+        const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1&playlist=eC4LfEVxvKg";
         let statusVideoSemasa = "";
 
         function semakJadualYoutube() {
@@ -531,12 +455,10 @@
             const player = document.getElementById('youtube-player');
             const waktuKhas = [5, 6, 13, 16, 19]; 
             
-            let targetLink = waktuKhas.includes(jamSemasa) ? linkKhas : linkAsal;
-            let targetStatus = waktuKhas.includes(jamSemasa) ? "khas" : "asal";
-
-            if (statusVideoSemasa !== targetStatus) { 
-                player.src = targetLink; 
-                statusVideoSemasa = targetStatus; 
+            if (waktuKhas.includes(jamSemasa)) {
+                if (statusVideoSemasa !== "khas") { player.src = linkKhas; statusVideoSemasa = "khas"; }
+            } else {
+                if (statusVideoSemasa !== "asal") { player.src = linkAsal; statusVideoSemasa = "asal"; }
             }
         }
         setInterval(semakJadualYoutube, 60000); 
