@@ -249,7 +249,7 @@
             <div class="card solat-container">
                 <h2>WAKTU SOLAT<br>DAERAH PADANG TERAP</h2>
                 <div class="solat-grid" id="solat-times">
-                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun jadual...</div>
+                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun jadual JAKIM...</div>
                 </div>
             </div>
         </div>
@@ -310,38 +310,59 @@
         setInterval(fetchPatientData, 10000);
         fetchPatientData();
 
-        // 3. WAKTU SOLAT & AZAN
+        // ====================================================
+        // 3. WAKTU SOLAT & AZAN (e-SOLAT JAKIM : ZON KDH03)
+        // ====================================================
         let solatData = {};
         let azanPlayedToday = {};
 
         async function fetchWaktuSolat() {
             try {
-                const url = "https://api.aladhan.com/v1/timingsByCity?city=Kuala%20Nerang&country=Malaysia";
+                // API Waktu Solat JAKIM KDH03
+                const url = "https://api.waktusolat.app/solat/KDH03";
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data.code === 200) {
-                    const timings = data.data.timings;
-                    solatData = {
-                        "Subuh": timings.Fajr,
-                        "Zohor": timings.Dhuhr,
-                        "Asar": timings.Asr,
-                        "Maghrib": timings.Maghrib,
-                        "Isyak": timings.Isha
-                    };
-                    renderSolat(); 
+                if (data && data.prayerTime && data.prayerTime.length > 0) {
+                    susunJadualJakim(data.prayerTime[0]);
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.error("Gagal mendapat API Pertama. Mencuba pelayan fallback...", error);
+                try {
+                    const fallbackUrl = "https://www.e-solat.gov.my/index.php?r=esolatApi/TimingByZone&zone=KDH03&period=today";
+                    const res = await fetch(fallbackUrl);
+                    const data = await res.json();
+                    if (data && data.prayerTime && data.prayerTime.length > 0) {
+                        susunJadualJakim(data.prayerTime[0]);
+                    }
+                } catch(e) {
+                    document.getElementById('solat-times').innerHTML = `<div style="color:red; text-align:center; padding:10px;">Gagal memuat turun jadual. Semak internet.</div>`;
+                }
+            }
         }
 
-        function renderSolat() {
+        function formatMasaJakim(timeStr) {
+            return timeStr.substring(0, 5); // Format dari HH:MM:SS ke HH:MM
+        }
+
+        function susunJadualJakim(timings) {
+            solatData = {
+                "Subuh": formatMasaJakim(timings.fajr),
+                "Zohor": formatMasaJakim(timings.dhuhr),
+                "Asar": formatMasaJakim(timings.asr),
+                "Maghrib": formatMasaJakim(timings.maghrib),
+                "Isyak": formatMasaJakim(timings.isha)
+            };
+            
             const container = document.getElementById('solat-times');
             container.innerHTML = ""; 
+            
             for (let [name, time] of Object.entries(solatData)) {
                 container.innerHTML += `<div class="solat-item" id="solat-${name}">${name} - ${time}</div>`;
                 if (azanPlayedToday[name] === undefined) azanPlayedToday[name] = false;
             }
         }
+        
         fetchWaktuSolat();
 
         function checkAzan() {
@@ -366,17 +387,17 @@
         setInterval(checkAzan, 20000);
 
         // ==========================================
-        // 4. PENJADUALAN YOUTUBE (AUTOPLAY)
+        // 4. PENJADUALAN YOUTUBE (AUTOPLAY DENGAN BUNYI)
         // ==========================================
         
-        // Pautan Asal (Playlist KKM) 
-        // Pastikan parameter autoplay=1 dan mute=1 kekal supaya ia automatik bermula
-        const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&mute=1&loop=1";
+        // Pautan Asal (Playlist KKM)
+        // Telah dibuang mute=1 (berbunyi)
+        const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
         
         // Pautan Khas 
-        // Gantikan ID_VIDEO_DI_SINI di KEDUA-DUA tempat di bawah.
-        // Parameter playlist=ID_VIDEO_DI_SINI ditambah supaya video tunggal boleh di-"loop" berulang kali tanpa berhenti.
-        const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&mute=1&loop=1";
+        // Telah dibuang mute=1 (berbunyi)
+        // Telah ditambah parameter &playlist=eC4LfEVxvKg supaya video tersebut loop tanpa henti
+        const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1&playlist=eC4LfEVxvKg";
         
         let statusVideoSemasa = "";
 
@@ -397,8 +418,8 @@
                 }
             }
         }
-        setInterval(semakJadualYoutube, 60000); // Semak jadual setiap 1 minit
-        semakJadualYoutube(); // Panggil semasa skrin mula dibuka
+        setInterval(semakJadualYoutube, 60000); 
+        semakJadualYoutube(); 
 
         // 5. AYAT QURAN (Tukar 2 minit)
         const quranVerses = [
