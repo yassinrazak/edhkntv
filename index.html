@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Dashboard Unit Kecemasan & Trauma Hospital Kuala Nerang</title>
     <!-- Font Arab & Moden -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -163,6 +164,7 @@
             letter-spacing: 1px; margin: 0 0 12px 0;
         }
         
+        /* Layout Zon Pesakit */
         .zones-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .zone-card { 
             color: white; padding: 12px 5px; border-radius: 10px; text-align: center; 
@@ -177,6 +179,7 @@
         .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
         .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
         
+        /* Layout Pengumuman Dinamik */
         .announcement-container { display: flex; justify-content: center; }
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
@@ -236,6 +239,7 @@
             <div class="video-container">
                 <iframe id="youtube-player" 
                         allow="autoplay; encrypted-media; picture-in-picture; accelerometer; clipboard-write; gyroscope" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
                         allowfullscreen>
                 </iframe>
             </div>
@@ -313,8 +317,8 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API (PASTIKAN MASUKKAN URL TERKINI ANDA DI SINI)
-        const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwAMQ7CigAdXJSerXfvJEmNrTDoZFjuwfaIPAyhmV8sk0cARR4tkTPy2HVpUBdv-UVc/exec"; 
+        // 2. GOOGLE SHEETS API (PASTIKAN GANTI DENGAN URL APPS SCRIPT ANDA)
+        const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwfROSRI2nTtlO_wBZhoRX7FLASt7PhrK3X_M0k7G9LBxJqkPcT1Qv6xzmTv73txcSg/exec"; 
         
         let totalWindows = 1; 
         let currentWindow = 1;
@@ -324,49 +328,47 @@
         let currentVerseIndex = 0;
         let cachedMaklumanStr = "[]"; 
 
-        // Menggunakan XHR/Fetch selamat khas untuk melepasi sekatan CORS pelayar web
+        // TEKNIK JSONP INJECTION: Melepasi Sekatan CORS GitHub Pages 100%
+        function handleAppsScriptResponse(data) {
+            if (data && data.status === "success") {
+                document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "0";
+                document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "0";
+                document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "0";
+                document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "0";
+                document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "0";
+
+                if (data.makluman && Array.isArray(data.makluman)) {
+                    let newMaklumanStr = JSON.stringify(data.makluman);
+                    if (newMaklumanStr !== cachedMaklumanStr) {
+                        cachedMaklumanStr = newMaklumanStr;
+                        semuaMakluman = data.makluman;
+                        if (currentWindow === 1) janaPaparanMakluman();
+                    }
+                }
+
+                if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
+                    semuaFooterVerses = data.footer;
+                }
+
+                if (data.petugas) {
+                    dataPetugas = data.petugas;
+                    semakSyifPetugas();
+                }
+            }
+        }
+
         function fetchPatientData() {
             if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", googleSheetUrl + "?t=" + new Date().getTime(), true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200 || xhr.status === 302) {
-                        try {
-                            var data = JSON.parse(xhr.responseText);
-                            if (data && data.status === "success") {
-                                document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "0";
-                                document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "0";
-                                document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "0";
-                                document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "0";
-                                document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "0";
+            // Padam skrip lama jika ada
+            const oldScript = document.getElementById('jsonp-script');
+            if (oldScript) oldScript.remove();
 
-                                if (data.makluman && Array.isArray(data.makluman)) {
-                                    let newMaklumanStr = JSON.stringify(data.makluman);
-                                    if (newMaklumanStr !== cachedMaklumanStr) {
-                                        cachedMaklumanStr = newMaklumanStr;
-                                        semuaMakluman = data.makluman;
-                                        if (currentWindow === 1) janaPaparanMakluman();
-                                    }
-                                }
-
-                                if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
-                                    semuaFooterVerses = data.footer;
-                                }
-
-                                if (data.petugas) {
-                                    dataPetugas = data.petugas;
-                                    semakSyifPetugas();
-                                }
-                            }
-                        } catch (e) {
-                            console.error("Ralat parsing JSON:", e);
-                        }
-                    }
-                }
-            };
-            xhr.send();
+            // Suntik skrip baru dinamik
+            const script = document.createElement('script');
+            script.id = 'jsonp-script';
+            script.src = googleSheetUrl + "?callback=handleAppsScriptResponse&t=" + new Date().getTime();
+            document.body.appendChild(script);
         }
         setInterval(fetchPatientData, 10000); 
         fetchPatientData();
