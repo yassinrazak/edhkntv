@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Dashboard Unit Kecemasan & Trauma Hospital Kuala Nerang</title>
-    <!-- Font Arab & Moden -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -60,7 +59,7 @@
         .main-container {
             display: flex; flex: 1; min-height: 0; padding: 15px; gap: 15px;
         }
-        .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; }
+        .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; position: relative; }
         .right-panel { flex: 2; display: flex; flex-direction: column; height: 100%; }
         
         /* ================= VIDEO PLAYER ================= */
@@ -68,13 +67,16 @@
             background: #000; border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0; overflow: hidden; 
             border: 2px solid white; height: 100%; display: flex; box-sizing: border-box;
-            position: relative;
+            position: relative; justify-content: center; align-items: center;
         }
         .video-container video { 
-            width: 100%; height: 100%; border: none; object-fit: contain; 
+            width: 100%; height: 100%; border: none; object-fit: contain; z-index: 10;
         }
         
-        /* Overlay Unmute (Aktifkan Bunyi Sekali Klik) */
+        #video-status {
+            position: absolute; color: white; font-size: 18px; z-index: 5; text-align: center; padding: 20px;
+        }
+
         #audio-enable-btn {
             position: absolute; top: 10px; left: 10px; z-index: 20;
             background: rgba(251, 191, 36, 0.95); color: #000; padding: 8px 15px;
@@ -113,36 +115,19 @@
         
         /* ================= BAHAGIAN BERTUKAR ================= */
         .rotating-section {
-            position: relative; 
-            height: 170px; 
-            flex-shrink: 0; 
-            overflow: hidden; 
-            box-sizing: border-box;
-            display: block;
+            position: relative; height: 170px; flex-shrink: 0; overflow: hidden; box-sizing: border-box; display: block;
         }
         .window-content { 
-            position: absolute; 
-            top: 0; left: 0; right: 0; height: 100%;
-            padding: 0 15px; 
-            opacity: 0; 
-            visibility: hidden;
-            transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
-            box-sizing: border-box;
-            text-align: center;
+            position: absolute; top: 0; left: 0; right: 0; height: 100%; padding: 0 15px; opacity: 0; visibility: hidden;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out; box-sizing: border-box; text-align: center;
         }
-        .window-content.active { 
-            opacity: 1; 
-            visibility: visible;
-            z-index: 2; 
-        }
+        .window-content.active { opacity: 1; visibility: visible; z-index: 2; }
         
         .section-title {
-            display: inline-block; background: #1e293b; color: white;
-            padding: 5px 20px; border-radius: 15px; font-size: 16px;
+            display: inline-block; background: #1e293b; color: white; padding: 5px 20px; border-radius: 15px; font-size: 16px;
             letter-spacing: 1px; margin: 0 0 12px 0;
         }
         
-        /* Layout Zon Pesakit */
         .zones-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .zone-card { 
             color: white; padding: 12px 5px; border-radius: 10px; text-align: center; 
@@ -157,45 +142,21 @@
         .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
         .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
         
-        /* Layout Pengumuman Dinamik */
         .announcement-container { display: flex; justify-content: center; }
         .announcement-card {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: var(--islamic-gold); padding: 0 30px; border-radius: 10px;
-            font-size: 32px; 
-            font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #2c3e50, #34495e); color: var(--islamic-gold); padding: 0 30px; border-radius: 10px;
+            font-size: 32px; font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* ================= FOOTER QURAN DINAMIK ================= */
+        /* ================= FOOTER ================= */
         footer { 
             background-color: var(--islamic-dark); color: var(--islamic-gold); text-align: center; 
             border-top: 3px solid var(--islamic-gold); display: flex; flex-direction: column; justify-content: center;
-            height: 130px; flex-shrink: 0; box-sizing: border-box; overflow: hidden; padding: 0 30px;
-            position: relative; z-index: 10;
+            height: 130px; flex-shrink: 0; box-sizing: border-box; overflow: hidden; padding: 0 30px; position: relative; z-index: 10;
         }
         .quran-arabic { font-size: 30px; font-family: 'Amiri', serif; margin-bottom: 6px; line-height: 1.3; transition: opacity 1.5s; }
         .quran-malay { font-size: 16px; color: white; transition: opacity 1.5s; }
-
-        /* ================= RESPONSIVE ================= */
-        @media screen and (max-width: 900px) {
-            body { height: auto; overflow: auto; }
-            header { flex-direction: column; text-align: center; gap: 8px; padding: 15px; height: auto; }
-            .header-title-text { font-size: 16px; white-space: normal; }
-            .datetime-container { width: 100%; justify-content: center; }
-            .main-container { flex-direction: column; }
-            .left-panel, .right-panel { flex: 1; width: 100%; }
-            .video-container { min-height: 250px; }
-            .solat-grid { grid-template-columns: repeat(3, 1fr); flex-direction: row; display: grid; }
-            .rotating-section { height: 180px;}
-            .zones-container, .announcement-container { flex-direction: column; grid-template-columns: repeat(2, 1fr); }
-            .zone-card:last-child { grid-column: span 2; }
-            .announcement-card { font-size: 20px; padding: 15px; height: auto;}
-            footer { height: auto; padding: 20px; }
-            .quran-arabic { font-size: 24px; }
-            .quran-malay { font-size: 14px; }
-        }
     </style>
 </head>
 <body>
@@ -215,23 +176,22 @@
     <div class="main-container">
         <div class="left-panel">
             <div class="video-container" id="video-box">
+                <div id="video-status">Sedang memuat turun sambungan Google Drive...</div>
                 <button id="audio-enable-btn" onclick="enableAudio()">🔊 Tekan Untuk Aktifkan Bunyi Video</button>
-                <video id="drive-video-player" autoplay muted playsinline></video>
+                <video id="drive-video-player" autoplay playsinline></video>
             </div>
         </div>
         <div class="right-panel">
             <div class="solat-container">
                 <h2>WAKTU SOLAT<br>DAERAH PADANG TERAP</h2>
                 <div class="solat-grid" id="solat-times">
-                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun waktu solat KDH03...</div>
+                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun waktu solat...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- BAHAGIAN YANG BOLEH BERTUKAR (ROTATING SECTION) -->
     <div class="rotating-section" id="rotating-container">
-        <!-- WINDOW 1: STATUS PESAKIT KEKAL DI SINI -->
         <div class="window-content active" id="window-1">
             <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
             <div class="zones-container">
@@ -244,7 +204,6 @@
         </div>
     </div>
 
-    <!-- FOOTER QURAN / MUTIARA KATA DINAMIK -->
     <footer>
         <div class="quran-arabic" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
         <div class="quran-malay" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
@@ -259,7 +218,6 @@
             const now = new Date();
             const hariMelayu = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
             const bulanMelayu = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
-            
             document.getElementById('current-day').innerText = hariMelayu[now.getDay()];
             document.getElementById('current-date').innerText = `${now.getDate()} ${bulanMelayu[now.getMonth()]} ${now.getFullYear()}`;
             document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
@@ -270,24 +228,17 @@
         // 2. GOOGLE SHEETS API
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwmbXtjpJ2oseN-664Xeqf6UgDOz83_fsHMtuS-4Fyese_qBUQ5nbFEC5lJ623b5Ry5/exec"; 
         
-        let totalWindows = 1; 
-        let currentWindow = 1;
-        let semuaMakluman = [];
-        let semuaFooterVerses = [];
-        let currentVerseIndex = 0;
-        let cachedMaklumanStr = "[]"; 
+        let totalWindows = 1, currentWindow = 1, semuaMakluman = [], semuaFooterVerses = [], currentVerseIndex = 0, cachedMaklumanStr = "[]"; 
         
-        // Pilihan Video Folder Google Drive
         let driveVideos = [];
         let currentVideoIndex = 0;
         let isAudioUnmuted = false;
-
-        // Tetapan Mod Video Khas (10 Minit Sebelum Solat / Azan)
         let isSpecialMode = false;
         let isAzanPlaying = false;
+        let videoLoadTimeout;
 
         // MASUKKAN GOOGLE DRIVE FILE ID UNTUK VIDEO KHAS (10 Minit Sebelum Solat)
-        const videoPanduanSolatID = "1H9tWnlDLzJpuH8iLClw2zbRIRF0FXqtK"; // Gantikan dengan ID Video Panduan Solat anda
+        const videoPanduanSolatID = "1H9tWnlDLzJpuH8iLClw2zbRIRF0FXqtK"; 
 
         async function fetchPatientData() {
             if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
@@ -302,47 +253,64 @@
                     document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
                     document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
 
-                    if (data.makluman && Array.isArray(data.makluman)) {
+                    if (data.makluman) {
                         let newMaklumanStr = JSON.stringify(data.makluman);
                         if (newMaklumanStr !== cachedMaklumanStr) {
-                            cachedMaklumanStr = newMaklumanStr;
-                            semuaMakluman = data.makluman;
+                            cachedMaklumanStr = newMaklumanStr; semuaMakluman = data.makluman;
                             if (currentWindow === 1) janaPaparanMakluman();
                         }
                     }
 
-                    if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
-                        semuaFooterVerses = data.footer;
-                    }
+                    if (data.footer) semuaFooterVerses = data.footer;
 
+                    // Tangkap senarai video dari Apps Script
                     if (data.videos && Array.isArray(data.videos) && data.videos.length > 0) {
                         let oldLen = driveVideos.length;
                         driveVideos = data.videos;
                         if (oldLen === 0 && !isSpecialMode && !isAzanPlaying) {
+                            document.getElementById('video-status').style.display = 'none';
                             playNextDriveVideo();
                         }
+                    } else if (driveVideos.length === 0) {
+                        document.getElementById('video-status').innerText = "Tiada video ditemui dalam folder Google Drive. Sila semak ID Folder pada skrip.";
                     }
                 }
             } catch (error) {
-                console.warn("Menunggu sambungan Apps Script...", error);
+                console.warn("Menunggu data...", error);
             }
         }
         setInterval(fetchPatientData, 10000); 
         fetchPatientData();
 
-        // 3. LOGIK PEMAIN VIDEO (BIASA & KHAS)
+        // 3. LOGIK PEMAIN VIDEO (BIASA & KHAS) DENGAN AUTO-SKIP & BYPASS VIRUS SCAN
         function playNextDriveVideo() {
             if (isSpecialMode || isAzanPlaying || driveVideos.length === 0) return;
 
             const player = document.getElementById('drive-video-player');
             const currentVideo = driveVideos[currentVideoIndex];
             
-            const directVideoUrl = `https://drive.google.com/uc?export=download&id=${currentVideo.id}`;
+            // Tambah &confirm=t untuk melepasi sekatan amaran saiz besar Google Drive
+            const directVideoUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${currentVideo.id}`;
             
             player.src = directVideoUrl;
             player.muted = !isAudioUnmuted;
+            
+            // Bypass sangkut loading (Skipper)
+            clearTimeout(videoLoadTimeout);
+            videoLoadTimeout = setTimeout(() => {
+                if (player.readyState === 0) {
+                    console.log("Video tersekat, melangkau ke video seterusnya...");
+                    player.onerror();
+                }
+            }, 10000); // Tunggu 10 saat, jika tak play, terus ke next video
 
-            player.play().catch(e => console.log("Autoplay ditahan pelayar:", e));
+            player.play().then(() => {
+                clearTimeout(videoLoadTimeout); // Berjaya play, batal timeout
+            }).catch(e => {
+                console.log("Autoplay ditahan pelayar:", e);
+                player.muted = true; // Paksa mute dan cuba lagi jika pelayar sekat
+                player.play().catch(console.error);
+            });
 
             player.onended = () => {
                 if (!isSpecialMode && !isAzanPlaying) {
@@ -354,21 +322,20 @@
             player.onerror = () => {
                 if (!isSpecialMode && !isAzanPlaying) {
                     currentVideoIndex = (currentVideoIndex + 1) % driveVideos.length;
-                    setTimeout(playNextDriveVideo, 2000);
+                    playNextDriveVideo();
                 }
             };
         }
 
-        // MEMAINkan VIDEO KHAS 10 MINIT SEBELUM SOLAT
         function playSpecialPrePrayerVideo() {
             if (isSpecialMode) return;
             isSpecialMode = true;
 
             const player = document.getElementById('drive-video-player');
-            const specialUrl = `https://drive.google.com/uc?export=download&id=${videoPanduanSolatID}`;
+            const specialUrl = `https://drive.google.com/uc?export=download&confirm=t&id=${videoPanduanSolatID}`;
 
             player.src = specialUrl;
-            player.loop = true; // Loop video panduan solat sehingga masuk waktu azan
+            player.loop = true; 
             player.muted = !isAudioUnmuted;
             player.play().catch(e => console.log("Video Khas Autoplay Error:", e));
         }
@@ -385,75 +352,39 @@
         function janaPaparanMakluman() {
             const container = document.getElementById('rotating-container');
             document.querySelectorAll('.dynamic-window').forEach(el => el.remove());
-            
-            if(semuaMakluman.length === 0) {
-                totalWindows = 1;
-                return;
-            }
-
-            let salinanMakluman = [...semuaMakluman];
-            let maklumanTerpilih = salinanMakluman.sort(() => 0.5 - Math.random()).slice(0, 5);
-            
+            if(semuaMakluman.length === 0) { totalWindows = 1; return; }
+            let maklumanTerpilih = [...semuaMakluman].sort(() => 0.5 - Math.random()).slice(0, 5);
             maklumanTerpilih.forEach((teks, index) => {
                 const windowId = index + 2; 
-                const html = `
-                    <div class="window-content dynamic-window" id="window-${windowId}">
-                        <h2 class="section-title">MAKLUMAN / PENGUMUMAN</h2>
-                        <div class="announcement-container">
-                            <div class="announcement-card">${teks}</div>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+                container.insertAdjacentHTML('beforeend', `<div class="window-content dynamic-window" id="window-${windowId}"><h2 class="section-title">MAKLUMAN / PENGUMUMAN</h2><div class="announcement-container"><div class="announcement-card">${teks}</div></div></div>`);
             });
-
             totalWindows = 1 + maklumanTerpilih.length;
         }
 
         function swapWindows() {
-            const windowSekarang = document.getElementById('window-' + currentWindow);
-            if(windowSekarang) windowSekarang.classList.remove('active');
-            
+            const wCur = document.getElementById('window-' + currentWindow);
+            if(wCur) wCur.classList.remove('active');
             currentWindow++;
             if (currentWindow > totalWindows) {
-                currentWindow = 1; 
-                setTimeout(() => { janaPaparanMakluman(); }, 1500);
+                currentWindow = 1; setTimeout(() => { janaPaparanMakluman(); }, 1500);
             }
-            
-            const windowSeterusnya = document.getElementById('window-' + currentWindow);
-            if (windowSeterusnya) {
-                windowSeterusnya.classList.add('active');
-            } else {
-                currentWindow = 1;
-                document.getElementById('window-1').classList.add('active');
-            }
+            const wNext = document.getElementById('window-' + currentWindow);
+            if (wNext) wNext.classList.add('active');
+            else { currentWindow = 1; document.getElementById('window-1').classList.add('active'); }
         }
         setInterval(swapWindows, 15000); 
 
         function updateQuran() {
             if (semuaFooterVerses.length === 0) return;
-
-            const arElement = document.getElementById('quran-arabic');
-            const msElement = document.getElementById('quran-malay');
-            
-            arElement.style.opacity = 0;
-            msElement.style.opacity = 0;
-            
+            const arElement = document.getElementById('quran-arabic'), msElement = document.getElementById('quran-malay');
+            arElement.style.opacity = 0; msElement.style.opacity = 0;
             setTimeout(() => {
                 currentVerseIndex = (currentVerseIndex + 1) % semuaFooterVerses.length;
                 let rawText = semuaFooterVerses[currentVerseIndex];
-                
                 if (rawText.includes('~')) {
-                    let parts = rawText.split('~');
-                    arElement.innerText = parts[0].trim();
-                    msElement.innerText = parts[1].trim();
-                } else {
-                    arElement.innerText = ""; 
-                    msElement.innerText = rawText.trim();
-                }
-                
-                arElement.style.opacity = 1;
-                msElement.style.opacity = 1;
+                    let parts = rawText.split('~'); arElement.innerText = parts[0].trim(); msElement.innerText = parts[1].trim();
+                } else { arElement.innerText = ""; msElement.innerText = rawText.trim(); }
+                arElement.style.opacity = 1; msElement.style.opacity = 1;
             }, 1500); 
         }
         setInterval(updateQuran, 120000); 
@@ -471,39 +402,22 @@
             try {
                 const response = await fetch(apiUrlPrimary);
                 const data = await response.json();
-                if (data && data.prayerTime && data.prayerTime.length > 0) {
-                    susunJadualSolat(data.prayerTime[0]);
-                    return;
-                }
-                throw new Error("Pautan utama tidak mengembalikan maklumat");
+                if (data && data.prayerTime && data.prayerTime.length > 0) { susunJadualSolat(data.prayerTime[0]); return; }
+                throw new Error("Gagal utama");
             } catch (error) {
                 try {
                     const res = await fetch(apiUrlSecondary);
                     const data = await res.json();
-                    if (data && data.prayerTime && data.prayerTime.length > 0) {
-                        susunJadualSolat(data.prayerTime[0]);
-                    }
-                } catch(e) {
-                    console.error("Gagal memuat turun data waktu solat KDH03:", e);
-                }
+                    if (data && data.prayerTime && data.prayerTime.length > 0) susunJadualSolat(data.prayerTime[0]);
+                } catch(e) {}
             }
         }
 
-        function formatMasaSolat(timeStr) { 
-            if(!timeStr) return "--:--";
-            return timeStr.substring(0, 5); 
-        }
+        function formatMasaSolat(timeStr) { return timeStr ? timeStr.substring(0, 5) : "--:--"; }
 
         function susunJadualSolat(timings) {
-            solatData = {
-                "Subuh": formatMasaSolat(timings.fajr), 
-                "Zohor": formatMasaSolat(timings.dhuhr),
-                "Asar": formatMasaSolat(timings.asr), 
-                "Maghrib": formatMasaSolat(timings.maghrib), 
-                "Isyak": formatMasaSolat(timings.isha)
-            };
-            const container = document.getElementById('solat-times');
-            container.innerHTML = ""; 
+            solatData = { "Subuh": formatMasaSolat(timings.fajr), "Zohor": formatMasaSolat(timings.dhuhr), "Asar": formatMasaSolat(timings.asr), "Maghrib": formatMasaSolat(timings.maghrib), "Isyak": formatMasaSolat(timings.isha) };
+            const container = document.getElementById('solat-times'); container.innerHTML = ""; 
             for (let [name, time] of Object.entries(solatData)) {
                 container.innerHTML += `<div class="solat-item" id="solat-${name}">${name} - ${time}</div>`;
                 if (azanPlayedToday[name] === undefined) azanPlayedToday[name] = false;
@@ -518,83 +432,60 @@
 
             for (let [name, time] of Object.entries(solatData)) {
                 if (!time || time === "--:--") continue;
-
                 const [h, m] = time.split(':').map(Number);
                 const solatTotalMinutes = h * 60 + m;
-
-                const diffMinutes = currentTotalMinutes - solatTotalMinutes; // Beza minit
+                const diffMinutes = currentTotalMinutes - solatTotalMinutes; 
                 const solatElement = document.getElementById(`solat-${name}`);
 
-                // Kelip jika dalam julat [-5 minit sebelum, +5 minit selepas]
                 if (diffMinutes >= -5 && diffMinutes <= 5) {
                     if (solatElement) solatElement.classList.add('active');
                 } else {
                     if (solatElement) solatElement.classList.remove('active');
                 }
 
-                // Pengesanan 10 minit sebelum solat (-10 minit hingga -1 minit)
-                if (diffMinutes >= -10 && diffMinutes < 0) {
-                    isWithin10MinPrePrayer = true;
-                }
+                if (diffMinutes >= -10 && diffMinutes < 0) isWithin10MinPrePrayer = true;
 
-                // APABILA TEPAT MASUK WAKTU SOLAT (diffMinutes === 0)
                 if (diffMinutes === 0 && !azanPlayedToday[name]) {
                     azanPlayedToday[name] = true;
                     triggerAzanSequence(name);
                 }
             }
 
-            // Kendalikan penukaran ke Video Khas 10 minit sebelum solat
             if (isWithin10MinPrePrayer && !isSpecialMode && !isAzanPlaying) {
                 playSpecialPrePrayerVideo();
             } else if (!isWithin10MinPrePrayer && isSpecialMode && !isAzanPlaying) {
-                // Keluar dari mod khas jika masa telah berlalu
                 isSpecialMode = false;
                 currentVideoIndex = (currentVideoIndex + 1) % (driveVideos.length || 1);
                 playNextDriveVideo();
             }
 
-            // Reset bendera pada tengah malam
             if (now.getHours() === 0 && now.getMinutes() === 0 && azanPlayedToday["Subuh"] !== false) { 
                 for(let key in azanPlayedToday) azanPlayedToday[key] = false; 
                 fetchWaktuSolat();
             }
         }
-        setInterval(checkAzan, 5000); // Semak setiap 5 saat
+        setInterval(checkAzan, 5000); 
 
-        // FUNGSI LAUNGAN AZAN & SAMBUNG VIDEO PLAYLIST SELEPAS TAMAT
         function triggerAzanSequence(solatName) {
             isAzanPlaying = true;
             isSpecialMode = false;
 
             const player = document.getElementById('drive-video-player');
-            if (player) {
-                player.pause(); // Hentikan video serta-merta
-            }
+            if (player) player.pause(); 
 
-            const azanAudio = (solatName === "Subuh") 
-                ? document.getElementById('azan-subuh') 
-                : document.getElementById('azan-biasa');
+            const azanAudio = (solatName === "Subuh") ? document.getElementById('azan-subuh') : document.getElementById('azan-biasa');
 
             if (azanAudio) {
                 azanAudio.currentTime = 0;
                 azanAudio.play().catch(e => console.log("Ralat main azan:", e));
-
-                // Selepas azan selesai dimainkan, sambung semula video biasa
                 azanAudio.onended = () => {
                     isAzanPlaying = false;
-                    const videoPlayer = document.getElementById('drive-video-player');
-                    if (videoPlayer) videoPlayer.loop = false;
-                    
+                    if (player) player.loop = false;
                     currentVideoIndex = (currentVideoIndex + 1) % (driveVideos.length || 1);
                     playNextDriveVideo();
                 };
             } else {
-                // Fallback jika audio tiada
-                setTimeout(() => {
-                    isAzanPlaying = false;
-                    playNextDriveVideo();
-                }, 180000); // 3 Minit
+                setTimeout(() => { isAzanPlaying = false; playNextDriveVideo(); }, 180000); 
             }
         }
     </script>
