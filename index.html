@@ -23,21 +23,24 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: #333;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            overflow: hidden; 
         }
         
-        /* ================= HEADER (Compact) ================= */
+        /* ================= HEADER ================= */
         header {
             background-color: #1e293b;
             color: white;
-            padding: 8px 20px;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
             z-index: 10;
+            height: 70px;
+            flex-shrink: 0; 
         }
         .header-left {
             display: flex;
@@ -45,18 +48,14 @@
             gap: 10px;
         }
         .header-left img {
-            height: 35px;
+            height: 45px;
             width: auto;
             object-fit: contain;
             background: white;
             padding: 3px;
             border-radius: 50%; 
         }
-        .header-title-text {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+        .header-title-text { font-size: 19px; font-weight: 700; letter-spacing: 0.5px; }
         .datetime-container {
             display: flex;
             gap: 10px;
@@ -64,37 +63,34 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 5px 15px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 15px;
         }
-        .time { color: var(--islamic-gold); font-size: 18px; font-weight: bold; }
+        .time { color: var(--islamic-gold); font-size: 20px; font-weight: bold; }
         
-        /* ================= MAIN LAYOUT (80% / 20%) ================= */
+        /* ================= MAIN LAYOUT ================= */
         .main-container {
             display: flex;
-            flex: 1;
-            padding: 10px 15px;
+            flex: 1; 
+            min-height: 0; 
+            padding: 15px;
             gap: 15px;
         }
-        .left-panel { flex: 8; display: flex; flex-direction: column; }
-        .right-panel { flex: 2; display: flex; flex-direction: column; }
+        .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; }
+        .right-panel { flex: 2; display: flex; flex-direction: column; height: 100%; }
         
-        .card {
+        /* ================= YOUTUBE ================= */
+        .video-container { 
             background: var(--card-bg); 
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
-            padding: 10px;
-            height: 100%;
-        }
-        
-        /* ================= YOUTUBE ================= */
-        .video-container { padding: 0; overflow: hidden; border: 2px solid white; display: flex;}
-        .video-container iframe { 
-            width: 100%; 
+            padding: 0; 
+            overflow: hidden; 
+            border: 2px solid white; 
             height: 100%; 
-            min-height: 320px; 
-            border-radius: 8px; 
-            border: none; 
+            display: flex;
+            box-sizing: border-box;
         }
+        .video-container iframe { width: 100%; height: 100%; border: none; }
         
         /* ================= WAKTU SOLAT ================= */
         .solat-container {
@@ -104,40 +100,44 @@
             background-size: 20px 20px;
             background-position: 0 0, 10px 10px;
             border: 2px solid var(--islamic-gold);
-            padding: 12px 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            padding: 15px;
+            height: 100%; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
         .solat-container h2 { 
             margin: 0 0 10px 0; 
             color: var(--islamic-gold); 
             text-align: center; 
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.3;
             border-bottom: 1px solid rgba(251, 191, 36, 0.3);
-            padding-bottom: 8px;
+            padding-bottom: 10px;
+            flex-shrink: 0; 
         }
         .solat-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
             gap: 6px; 
         }
         .solat-item {
             background: rgba(255, 255, 255, 0.1); 
             border: 1px solid rgba(251, 191, 36, 0.3);
             color: white;
-            padding: 8px 5px; 
+            padding: 12px 5px; 
             border-radius: 8px;
             text-align: center; 
             font-size: 16px; 
             font-weight: 600;
-            line-height: 1.2;
             transition: all 0.3s ease;
         }
+        .solat-item.active { animation: berkelip-merah 1.5s infinite; color: white; font-weight: bold; }
         
-        .solat-item.active { 
-            animation: berkelip-merah 1.5s infinite; 
-            color: white;
-            font-weight: bold;
-        }
         @keyframes berkelip-merah {
             0% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; border-color: white; transform: scale(1.05); }
             50% { background-color: #8b0000; box-shadow: none; border-color: #ff0000; transform: scale(1); }
@@ -148,40 +148,32 @@
         .rotating-section {
             padding: 0 15px;
             text-align: center;
-            min-height: 150px; /* Kekalkan ruang supaya skrin tidak melompat bila bertukar */
+            height: 170px; 
+            flex-shrink: 0; 
+            overflow: hidden; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
-        .window-content {
-            display: none; /* Sembunyikan semua secara default */
-            animation: fadeInEffect 1s ease-in-out;
-        }
-        .window-content.active {
-            display: block; /* Hanya paparkan yang aktif */
-        }
-
+        .window-content { display: none; animation: fadeInEffect 1s ease-in-out; height: 100%; }
+        .window-content.active { display: block; }
         .section-title {
             display: inline-block;
             background: #1e293b;
             color: white;
-            padding: 3px 20px;
+            padding: 5px 20px;
             border-radius: 15px;
-            font-size: 15px;
+            font-size: 16px;
             letter-spacing: 1px;
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
         }
         
-        /* Layout Window 1: Pesakit */
-        .zones-container { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 12px; 
-            padding-bottom: 15px;
-        }
+        /* Layout Zon Pesakit */
+        .zones-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .zone-card { 
-            color: white; 
-            padding: 12px 5px; 
-            border-radius: 10px; 
-            text-align: center; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            color: white; padding: 12px 5px; border-radius: 10px; text-align: center; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 95px; box-sizing: border-box;
         }
         .zone-card h3 { margin: 0; font-size: 14px; text-transform: uppercase; }
         .zone-card .count { font-size: 45px; font-weight: bold; margin-top: 2px; line-height: 1; }
@@ -192,24 +184,22 @@
         .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
         .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
         
-        /* Layout Window 2: Pengumuman */
-        .announcement-container {
-            display: flex;
-            gap: 15px;
-            padding-bottom: 15px;
-            justify-content: center;
-        }
+        /* Layout Pengumuman Dinamik */
+        .announcement-container { display: flex; justify-content: center; }
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: var(--islamic-gold);
-            padding: 15px 30px;
+            padding: 0 30px;
             border-radius: 10px;
-            font-size: 20px;
+            font-size: 26px; 
             font-weight: 600;
-            flex: 1;
+            width: 100%; 
+            height: 95px; 
+            box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
@@ -217,27 +207,15 @@
         footer { 
             background-color: var(--islamic-dark); 
             color: var(--islamic-gold); 
-            padding: 20px 30px; 
             text-align: center; 
             border-top: 3px solid var(--islamic-gold);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100px; 
+            display: flex; flex-direction: column; justify-content: center;
+            height: 130px; flex-shrink: 0; box-sizing: border-box; overflow: hidden; padding: 0 30px;
         }
-        .quran-arabic { 
-            font-size: 34px; 
-            font-family: 'Amiri', serif; 
-            margin-bottom: 10px; 
-            line-height: 1.4; 
-        }
-        .quran-malay { 
-            font-size: 18px; 
-            color: white; 
-        }
+        .quran-arabic { font-size: 32px; font-family: 'Amiri', serif; margin-bottom: 8px; line-height: 1.4; }
+        .quran-malay { font-size: 16px; color: white; }
 
         .fade-in { animation: fadeInEffect 1.5s ease-in-out; }
-        
         @keyframes fadeInEffect {
             0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -245,15 +223,19 @@
 
         /* ================= RESPONSIVE ================= */
         @media screen and (max-width: 900px) {
-            header { flex-direction: column; text-align: center; gap: 8px; padding: 15px; }
+            body { height: auto; overflow: auto; }
+            header { flex-direction: column; text-align: center; gap: 8px; padding: 15px; height: auto; }
             .header-title-text { font-size: 16px; white-space: normal; }
             .datetime-container { width: 100%; justify-content: center; }
             .main-container { flex-direction: column; }
             .left-panel, .right-panel { flex: 1; width: 100%; }
-            .video-container iframe { min-height: 250px; }
-            .solat-grid { grid-template-columns: repeat(3, 1fr); }
+            .video-container { min-height: 250px; }
+            .solat-grid { grid-template-columns: repeat(3, 1fr); flex-direction: row; display: grid; }
+            .rotating-section { height: auto; padding-bottom: 20px;}
             .zones-container, .announcement-container { flex-direction: column; grid-template-columns: repeat(2, 1fr); }
             .zone-card:last-child { grid-column: span 2; }
+            .announcement-card { font-size: 20px; padding: 15px; height: auto;}
+            footer { height: auto; padding: 20px; }
             .quran-arabic { font-size: 26px; }
             .quran-malay { font-size: 15px; }
         }
@@ -275,25 +257,24 @@
 
     <div class="main-container">
         <div class="left-panel">
-            <div class="card video-container">
+            <div class="video-container">
                 <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
-
         <div class="right-panel">
-            <div class="card solat-container">
+            <div class="solat-container">
                 <h2>WAKTU SOLAT<br>DAERAH PADANG TERAP</h2>
                 <div class="solat-grid" id="solat-times">
-                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun jadual JAKIM...</div>
+                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun jadual...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- BAHAGIAN YANG BOLEH BERTUKAR (ROTATING SECTION) -->
-    <div class="rotating-section">
+    <div class="rotating-section" id="rotating-container">
         
-        <!-- WINDOW 1: STATUS PESAKIT (Aktif secara lalai) -->
+        <!-- WINDOW 1: STATUS PESAKIT KEKAL DI SINI -->
         <div class="window-content active" id="window-1">
             <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
             <div class="zones-container">
@@ -304,50 +285,15 @@
                 <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
             </div>
         </div>
-
-        <!-- WINDOW 2: MAKLUMAN / PENGUMUMAN LAIN -->
-        <div class="window-content" id="window-2">
-            <h2 class="section-title">MAKLUMAN KEPADA PELAWAT / WARIS</h2>
-            <div class="announcement-container">
-                <div class="announcement-card">
-                    Hanya SATU (1) orang pengiring sahaja yang dibenarkan untuk setiap pesakit.
-                </div>
-                <div class="announcement-card">
-                    Kes Kecemasan & Kritikal (Zon Merah) akan diberikan keutamaan. Harap bersabar menunggu giliran.
-                </div>
-                <div class="announcement-card">
-                    Untuk makluman, kes kecemasan dan kritikal (Zon Merah) akan diberikan keutamaan bagi memastikan rawatan segera dapat diberikan.
-                </div>
-                <div class="announcement-card">
-                    Mohon perhatian, masa menunggu mungkin berbeza bergantung kepada tahap kecemasan dan keadaan semasa di Jabatan Kecemasan.
-                </div>
-                <div class="announcement-card">
-                    Pesakit dan waris dimohon untuk tidak bimbang sekiranya pesakit lain dipanggil terlebih dahulu kerana keutamaan adalah berdasarkan tahap kecemasan.
-                </div>
-                <div class="announcement-card">
-                    Kami memahami kesulitan yang dialami sepanjang tempoh menunggu. Kerjasama dan kesabaran anda amat kami hargai.
-                </div>
-                <div class="announcement-card">
-                    Demi keselamatan bersama, semua pesakit dan waris dimohon mematuhi SOP serta memakai pelitup muka sepanjang berada di Zon Kecemasan.
-                </div>
-                 <div class="announcement-card">
-                    Sila amalkan kebersihan tangan dengan mencuci tangan secara berkala bagi mencegah penyebaran jangkitan.
-                </div>
-                 <div class="announcement-card">
-                    Tangan bersih, persekitaran lebih selamat. Jadikan amalan mencuci tangan sebagai rutin sepanjang berada di hospital.
-                </div>
-            </div>
-        </div>
+        <!-- WINDOW PENGUMUMAN AKAN DIJANA SECARA AUTOMATIK DI SINI OLEH JAVASCRIPT -->
 
     </div>
-    <!-- TAMAT BAHAGIAN BERTUKAR -->
 
     <footer>
         <div class="quran-arabic fade-in" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
         <div class="quran-malay fade-in" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
     </footer>
 
-    <!-- Audio Azan -->
     <audio id="azan-subuh" src="azan_subuh.mp3"></audio>
     <audio id="azan-biasa" src="azan_biasa.mp3"></audio>
 
@@ -365,8 +311,11 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API (Pesakit)
+        // 2. GOOGLE SHEETS API (Pesakit & Makluman)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwp7EyAK5nTF2VUDIUNyaVc4QpcoWoi0bI3BKU0pvgTSA_6NoGjEKd-JGKv8KW7B3XU/exec"; 
+        
+        let totalWindows = 1; // Mula dengan 1 window (Status Pesakit)
+        let currentWindow = 1;
 
         async function fetchPatientData() {
             if(googleSheetUrl === "LETAK_URL_GOOGLE_SCRIPT_ANDA_DI_SINI") return;
@@ -374,17 +323,78 @@
                 const response = await fetch(googleSheetUrl);
                 const data = await response.json();
                 
+                // Kemaskini Nombor Pesakit
                 document.getElementById('count-red').innerText = data.merah;
                 document.getElementById('count-yellow').innerText = data.kuning;
                 document.getElementById('count-green').innerText = data.hijau;
                 document.getElementById('count-asthma').innerText = data.asthma;
                 document.getElementById('count-obs').innerText = data.obs;
+
+                // Kemaskini Window Makluman
+                if (data.makluman && Array.isArray(data.makluman)) {
+                    janaPaparanMakluman(data.makluman);
+                }
             } catch (error) {
                 console.error("Gagal baca Google Sheets:", error);
             }
         }
-        setInterval(fetchPatientData, 10000);
+        setInterval(fetchPatientData, 10000); // Semak Google Sheet setiap 10 saat
         fetchPatientData();
+
+        // FUNGSI JANA MAKLUMAN AUTOMATIK DARI GOOGLE SHEET
+        function janaPaparanMakluman(senaraiMakluman) {
+            const container = document.getElementById('rotating-container');
+            
+            // Padam window makluman yang lama (jika ada update di Google Sheet)
+            document.querySelectorAll('.dynamic-window').forEach(el => el.remove());
+            
+            // Bina window baharu untuk setiap baris makluman
+            senaraiMakluman.forEach((teks, index) => {
+                const windowId = index + 2; // Sebab window 1 adalah pesakit
+                const html = `
+                    <div class="window-content dynamic-window" id="window-${windowId}">
+                        <h2 class="section-title">MAKLUMAN / PENGUMUMAN</h2>
+                        <div class="announcement-container">
+                            <div class="announcement-card">${teks}</div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+
+            // Kemaskini jumlah keseluruhan window yang perlu diputar
+            totalWindows = 1 + senaraiMakluman.length;
+
+            // Failsafe: Jika window sekarang lebih besar dari jumlah baru, reset ke 1
+            if (currentWindow > totalWindows) {
+                document.querySelectorAll('.window-content').forEach(el => el.classList.remove('active'));
+                currentWindow = 1;
+                document.getElementById('window-1').classList.add('active');
+            }
+        }
+
+        // FUNGSI ROTASI (TUKAR-TUKAR WINDOW)
+        function swapWindows() {
+            // Sembunyikan semua window (langkah selamat)
+            document.querySelectorAll('.window-content').forEach(el => el.classList.remove('active'));
+            
+            // Bergerak ke paparan seterusnya
+            currentWindow++;
+            if (currentWindow > totalWindows) {
+                currentWindow = 1; 
+            }
+            
+            // Tunjukkan paparan baharu
+            const nextWindow = document.getElementById('window-' + currentWindow);
+            if (nextWindow) {
+                nextWindow.classList.add('active');
+            } else {
+                currentWindow = 1;
+                document.getElementById('window-1').classList.add('active');
+            }
+        }
+        // Bertukar setiap 15 saat (15000 milisaat)
+        setInterval(swapWindows, 15000);
 
         // ====================================================
         // 3. WAKTU SOLAT & AZAN (e-SOLAT JAKIM : ZON KDH03)
@@ -397,53 +407,36 @@
                 const url = "https://api.waktusolat.app/solat/KDH03";
                 const response = await fetch(url);
                 const data = await response.json();
-                
-                if (data && data.prayerTime && data.prayerTime.length > 0) {
-                    susunJadualJakim(data.prayerTime[0]);
-                }
+                if (data && data.prayerTime && data.prayerTime.length > 0) susunJadualJakim(data.prayerTime[0]);
             } catch (error) {
-                console.error("Gagal mendapat API Pertama. Mencuba pelayan fallback...", error);
                 try {
                     const fallbackUrl = "https://www.e-solat.gov.my/index.php?r=esolatApi/TimingByZone&zone=KDH03&period=today";
                     const res = await fetch(fallbackUrl);
                     const data = await res.json();
-                    if (data && data.prayerTime && data.prayerTime.length > 0) {
-                        susunJadualJakim(data.prayerTime[0]);
-                    }
-                } catch(e) {
-                    document.getElementById('solat-times').innerHTML = `<div style="color:red; text-align:center; padding:10px;">Gagal memuat turun jadual. Semak internet.</div>`;
-                }
+                    if (data && data.prayerTime && data.prayerTime.length > 0) susunJadualJakim(data.prayerTime[0]);
+                } catch(e) {}
             }
         }
 
-        function formatMasaJakim(timeStr) {
-            return timeStr.substring(0, 5); 
-        }
+        function formatMasaJakim(timeStr) { return timeStr.substring(0, 5); }
 
         function susunJadualJakim(timings) {
             solatData = {
-                "Subuh": formatMasaJakim(timings.fajr),
-                "Zohor": formatMasaJakim(timings.dhuhr),
-                "Asar": formatMasaJakim(timings.asr),
-                "Maghrib": formatMasaJakim(timings.maghrib),
-                "Isyak": formatMasaJakim(timings.isha)
+                "Subuh": formatMasaJakim(timings.fajr), "Zohor": formatMasaJakim(timings.dhuhr),
+                "Asar": formatMasaJakim(timings.asr), "Maghrib": formatMasaJakim(timings.maghrib), "Isyak": formatMasaJakim(timings.isha)
             };
-            
             const container = document.getElementById('solat-times');
             container.innerHTML = ""; 
-            
             for (let [name, time] of Object.entries(solatData)) {
                 container.innerHTML += `<div class="solat-item" id="solat-${name}">${name} - ${time}</div>`;
                 if (azanPlayedToday[name] === undefined) azanPlayedToday[name] = false;
             }
         }
-        
         fetchWaktuSolat();
 
         function checkAzan() {
             const now = new Date();
             const currentHourMin = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-
             for (let [name, time] of Object.entries(solatData)) {
                 if (currentHourMin === time && !azanPlayedToday[name]) {
                     document.getElementById(`solat-${name}`).classList.add('active');
@@ -466,7 +459,6 @@
         // ==========================================
         const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
         const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1&playlist=eC4LfEVxvKg";
-        
         let statusVideoSemasa = "";
 
         function semakJadualYoutube() {
@@ -475,46 +467,16 @@
             const waktuKhas = [5, 6, 13, 16, 19]; 
             
             if (waktuKhas.includes(jamSemasa)) {
-                if (statusVideoSemasa !== "khas") {
-                    player.src = linkKhas;
-                    statusVideoSemasa = "khas";
-                }
+                if (statusVideoSemasa !== "khas") { player.src = linkKhas; statusVideoSemasa = "khas"; }
             } else {
-                if (statusVideoSemasa !== "asal") {
-                    player.src = linkAsal;
-                    statusVideoSemasa = "asal";
-                }
+                if (statusVideoSemasa !== "asal") { player.src = linkAsal; statusVideoSemasa = "asal"; }
             }
         }
         setInterval(semakJadualYoutube, 60000); 
         semakJadualYoutube(); 
 
         // ==========================================
-        // 5. ROTASI WINDOWS (Pesakit <-> Makluman)
-        // ==========================================
-        let currentWindow = 1;
-        const totalWindows = 2; // Jumlah window yang ada
-
-        function swapWindows() {
-            // Sembunyikan window sekarang
-            document.getElementById('window-' + currentWindow).classList.remove('active');
-            
-            // Pergi ke window seterusnya
-            currentWindow++;
-            if (currentWindow > totalWindows) {
-                currentWindow = 1; // Kembali ke window 1
-            }
-            
-            // Tunjukkan window baharu
-            document.getElementById('window-' + currentWindow).classList.add('active');
-        }
-        
-        // Tukar window secara automatik setiap 15 saat (15000 milisaat)
-        setInterval(swapWindows, 15000);
-
-
-        // ==========================================
-        // 6. AYAT QURAN (Tukar 2 minit)
+        // 5. AYAT QURAN (Tukar 2 minit)
         // ==========================================
         const quranVerses = [
             { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
@@ -532,10 +494,8 @@
             
             arElement.classList.remove('fade-in'); msElement.classList.remove('fade-in');
             void arElement.offsetWidth; 
-            
             arElement.innerText = quranVerses[currentVerseQuran].ar;
             msElement.innerText = quranVerses[currentVerseQuran].ms;
-            
             arElement.classList.add('fade-in'); msElement.classList.add('fade-in');
         }
         setInterval(updateQuran, 120000);
