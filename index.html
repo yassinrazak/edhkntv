@@ -102,11 +102,8 @@
 
         /* ================= PEGAWAI BERTUGAS (20%) ================= */
         .petugas-container {
-            background: #1e293b;
-            color: white;
-            border: 2px solid #38bdf8;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 12px;
+            background: #1e293b; color: white; border: 2px solid #38bdf8;
+            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 12px;
             height: 100%; box-sizing: border-box; display: flex; flex-direction: column;
         }
         .petugas-container h2 {
@@ -123,8 +120,7 @@
             flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 6px;
         }
         .petugas-card {
-            background: rgba(255,255,255,0.07);
-            border-left: 3px solid #38bdf8;
+            background: rgba(255,255,255,0.07); border-left: 3px solid #38bdf8;
             border-radius: 6px; padding: 6px 8px;
         }
         .petugas-role {
@@ -137,28 +133,16 @@
         
         /* ================= BAHAGIAN BERTUKAR ================= */
         .rotating-section {
-            position: relative; 
-            height: 170px; 
-            flex-shrink: 0; 
-            overflow: hidden; 
-            box-sizing: border-box;
-            display: block;
+            position: relative; height: 170px; flex-shrink: 0; 
+            overflow: hidden; box-sizing: border-box; display: block;
         }
         .window-content { 
-            position: absolute; 
-            top: 0; left: 0; right: 0; height: 100%;
-            padding: 0 15px; 
-            opacity: 0; 
-            visibility: hidden;
+            position: absolute; top: 0; left: 0; right: 0; height: 100%;
+            padding: 0 15px; opacity: 0; visibility: hidden;
             transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
-            box-sizing: border-box;
-            text-align: center;
+            box-sizing: border-box; text-align: center;
         }
-        .window-content.active { 
-            opacity: 1; 
-            visibility: visible;
-            z-index: 2; 
-        }
+        .window-content.active { opacity: 1; visibility: visible; z-index: 2; }
         
         .section-title {
             display: inline-block; background: #1e293b; color: white;
@@ -186,8 +170,7 @@
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: var(--islamic-gold); padding: 0 30px; border-radius: 10px;
-            font-size: 32px; 
-            font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
+            font-size: 32px; font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
             display: flex; align-items: center; justify-content: center;
             text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
@@ -277,9 +260,8 @@
         </div>
     </div>
 
-    <!-- BAHAGIAN BERTUKAR (ROTATING SECTION) -->
+    <!-- BAHAGIAN BERTUKAR -->
     <div class="rotating-section" id="rotating-container">
-        <!-- WINDOW 1: STATUS PESAKIT -->
         <div class="window-content active" id="window-1">
             <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
             <div class="zones-container">
@@ -312,13 +294,12 @@
             document.getElementById('current-date').innerText = `${now.getDate()} ${bulanMelayu[now.getMonth()]} ${now.getFullYear()}`;
             document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
             
-            // Kemaskini paparan syif pegawai bertugas mengikut masa
             semakSyifPetugas();
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API (Pesakit, Makluman, Footer & Petugas)
+        // 2. GOOGLE SHEETS API
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwmbXtjpJ2oseN-664Xeqf6UgDOz83_fsHMtuS-4Fyese_qBUQ5nbFEC5lJ623b5Ry5/exec"; 
         
         let totalWindows = 1; 
@@ -330,17 +311,17 @@
         let cachedMaklumanStr = "[]"; 
 
         async function fetchPatientData() {
-            if(googleSheetUrl === "LETAK_URL_GOOGLE_SCRIPT_ANDA_DI_SINI") return;
+            if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
             try {
                 const response = await fetch(googleSheetUrl);
                 const data = await response.json();
                 
                 // Pesakit
-                document.getElementById('count-red').innerText = data.merah;
-                document.getElementById('count-yellow').innerText = data.kuning;
-                document.getElementById('count-green').innerText = data.hijau;
-                document.getElementById('count-asthma').innerText = data.asthma;
-                document.getElementById('count-obs').innerText = data.obs;
+                document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
+                document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
+                document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "-";
+                document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
+                document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
 
                 // Makluman (Lajur F)
                 if (data.makluman && Array.isArray(data.makluman)) {
@@ -390,9 +371,9 @@
             const activeStaff = dataPetugas[syifKey];
             if (activeStaff) {
                 document.getElementById('shift-label').innerText = labelText;
-                document.getElementById('staff-dr').innerText = activeStaff.dr;
-                document.getElementById('staff-ppp').innerText = activeStaff.ppp;
-                document.getElementById('staff-sn').innerText = activeStaff.sn;
+                document.getElementById('staff-dr').innerText = activeStaff.dr || "-";
+                document.getElementById('staff-ppp').innerText = activeStaff.ppp || "-";
+                document.getElementById('staff-sn').innerText = activeStaff.sn || "-";
             }
         }
 
