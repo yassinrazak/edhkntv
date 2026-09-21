@@ -15,8 +15,8 @@
             --green-zone: #2ecc71;
             --asthma-bay: #3498db;
             --obs-bay: #9b59b6;
-            --islamic-dark: #064e3b; /* Hijau Gelap */
-            --islamic-gold: #fbbf24; /* Emas */
+            --islamic-dark: #064e3b; 
+            --islamic-gold: #fbbf24; 
         }
         body {
             margin: 0;
@@ -42,22 +42,24 @@
         }
         .header-left {
             display: flex;
+            flex-direction: row;
             align-items: center;
             gap: 15px;
         }
-        /* Style Logo */
         .header-left img {
-            height: 55px; /* Ketinggian logo */
+            height: 60px;
             width: auto;
+            object-fit: contain;
             background: white;
             padding: 3px;
-            border-radius: 50%; /* Jadikan logo bulat (optional) */
+            border-radius: 50%; 
             box-shadow: 0 0 5px rgba(255,255,255,0.5);
         }
         .header-title-text {
             font-size: 22px;
             font-weight: 700;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
         .datetime-container {
             display: flex;
@@ -99,9 +101,8 @@
             border: none; 
         }
         
-        /* ================= WAKTU SOLAT (ISLAMIC MODERN) ================= */
+        /* ================= WAKTU SOLAT ================= */
         .solat-container {
-            /* Latar belakang Hijau Zamrud dengan corak Geometri CSS */
             background-color: var(--islamic-dark);
             background-image: radial-gradient(rgba(251, 191, 36, 0.15) 2px, transparent 2px), 
                               radial-gradient(rgba(251, 191, 36, 0.1) 2px, transparent 2px);
@@ -127,7 +128,6 @@
             margin-top: 15px; 
         }
         .solat-item {
-            /* Efek Glassmorphism */
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
@@ -183,7 +183,6 @@
         .zone-card h3 { margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 700; }
         .zone-card .count { font-size: 60px; font-weight: bold; margin-top: 5px; line-height: 1; }
         
-        /* Warna Zon */
         .zone-red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .zone-yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); color: #2c3e50; }
         .zone-green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
@@ -197,9 +196,18 @@
             padding: 15px; 
             text-align: center; 
             border-top: 3px solid var(--islamic-gold);
+            min-height: 80px;
         }
         .quran-arabic { font-size: 38px; font-family: 'Amiri', serif; margin-bottom: 5px; }
         .quran-malay { font-size: 20px; color: white; }
+
+        /* Kesan Animasi Fade In */
+        .fade-in { animation: fadeInEffect 1.5s ease-in-out; }
+        
+        @keyframes fadeInEffect {
+            0% { opacity: 0; transform: translateY(5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
         @keyframes pulse-gold {
             0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
@@ -210,11 +218,10 @@
 </head>
 <body>
 
-    <!-- Header dengan Logo -->
+    <!-- Header dengan Logo Bersebelahan Title -->
     <header>
         <div class="header-left">
-            <!-- PENTING: Sila letak fail logo anda sebagai "logo.png" dalam folder yang sama -->
-            <img src="logo.png" alt="Logo KKM/Hospital" onerror="this.style.display='none'"> 
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'"> 
             <div class="header-title-text">UNIT KECEMASAN DAN TRAUMA HOSPITAL KUALA NERANG</div>
         </div>
         <div class="datetime-container">
@@ -224,33 +231,30 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="main-container">
         <!-- Panel Kiri: Video -->
         <div class="left-panel">
             <div class="card video-container">
                 <iframe 
-                    src="https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&mute=1&loop=1" 
+                    src="https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1" 
                     allow="autoplay; encrypted-media" 
                     allowfullscreen>
                 </iframe>
             </div>
         </div>
 
-        <!-- Panel Kanan: Solat Islamic Modern -->
+        <!-- Panel Kanan: Solat -->
         <div class="right-panel">
             <div class="card solat-container">
                 <h2>Waktu Solat</h2>
-                <div class="solat-grid" id="solat-times">
-                    <!-- Data solat diisi oleh Javascript -->
-                </div>
+                <div class="solat-grid" id="solat-times"></div>
             </div>
         </div>
     </div>
 
     <!-- Data Pesakit -->
     <div class="patient-section">
-        <h2 class="section-title">BILANGAN PESAKIT</h2>
+        <h2 class="section-title">BILANGAN PESAKIT TERKINI</h2>
         <div class="zones-container">
             <div class="zone-card zone-red">
                 <h3>Zon Merah</h3>
@@ -277,8 +281,8 @@
 
     <!-- Footer Quran -->
     <footer>
-        <div class="quran-arabic" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-        <div class="quran-malay" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
+        <div class="quran-arabic fade-in" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div class="quran-malay fade-in" id="quran-malay">Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.</div>
     </footer>
 
     <!-- Audio Azan -->
@@ -300,7 +304,7 @@
         updateClock();
 
         // 2. DATA PESAKIT (Google Sheets)
-        // PASTIKAN LETAK URL WEB APP GOOGLE SCRIPT ANDA DI SINI
+        // PASTIKAN LETAK URL WEB APP GOOGLE SCRIPT ANDA DI SINI (JANGAN LUPA)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwp7EyAK5nTF2VUDIUNyaVc4QpcoWoi0bI3BKU0pvgTSA_6NoGjEKd-JGKv8KW7B3XU/exec"; 
 
         async function fetchPatientData() {
@@ -322,7 +326,6 @@
         fetchPatientData();
 
         // 3. WAKTU SOLAT & AZAN
-        // Waktu statik sebagai contoh
         const solatData = { 
             "Subuh": "05:55", 
             "Zohor": "13:15", 
@@ -366,20 +369,46 @@
         renderSolat();
         setInterval(checkAzan, 20000);
 
-        // 4. AYAT QURAN (Tukar 5 minit)
+        // 4. AYAT QURAN (10 Ayat, Bertukar Setiap 2 Minit)
         const quranVerses = [
             { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
             { ar: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ", ms: "Dan apabila aku sakit, maka Dialah yang menyembuhkan penyakitku. (Asy-Syu'ara: 80)" },
-            { ar: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", ms: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya. (Al-Baqarah: 286)" }
+            { ar: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", ms: "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya. (Al-Baqarah: 286)" },
+            { ar: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", ms: "Ketahuilah, dengan mengingati Allah hati akan menjadi tenang. (Ar-Ra'd: 28)" },
+            { ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", ms: "Wahai orang yang beriman! Mohonlah pertolongan dengan sabar dan solat. Sesungguhnya Allah bersama orang yang sabar. (Al-Baqarah: 153)" },
+            { ar: "وَأَيُّوبَ إِذْ نَادَىٰ رَبَّهُ أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ", ms: "Dan (ingatlah kisah) Nabi Ayub, ketika dia merayu Tuhannya: 'Sesungguhnya aku ditimpa penyakit, dan Engkaulah Maha Penyayang.' (Al-Anbiya: 83)" },
+            { ar: "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ", ms: "Dan Tuhanmu berfirman: 'Berdoalah kamu kepada-Ku, nescaya Aku perkenankan doa permohonan kamu.' (Ghafir: 60)" },
+            { ar: "قُل لَّن يُصِيبَنَا إِلَّا مَا كَتَبَ اللَّهُ لَنَا هُوَ مَوْلَانَا", ms: "Katakanlah: 'Tidak sekali-kali menimpa kami sesuatu pun melainkan apa yang telah ditetapkan Allah bagi kami. Dialah Pelindung kami.' (At-Tawbah: 51)" },
+            { ar: "وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ", ms: "Dan Kami turunkan dari Al-Quran suatu yang menjadi penawar (penyembuh) dan rahmat bagi orang-orang yang beriman. (Al-Isra': 82)" },
+            { ar: "إِنَّمَا يُوَفَّى الصَّابِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍ", ms: "Sesungguhnya orang-orang yang bersabar sahaja yang akan disempurnakan pahala mereka dengan tidak terkira. (Az-Zumar: 10)" }
         ];
         let currentVerse = 0;
 
         function updateQuran() {
             currentVerse = (currentVerse + 1) % quranVerses.length;
-            document.getElementById('quran-arabic').innerText = quranVerses[currentVerse].ar;
-            document.getElementById('quran-malay').innerText = quranVerses[currentVerse].ms;
+            
+            const arElement = document.getElementById('quran-arabic');
+            const msElement = document.getElementById('quran-malay');
+            
+            // Buang class animasi sementara
+            arElement.classList.remove('fade-in');
+            msElement.classList.remove('fade-in');
+            
+            // Trick untuk paksa browser mula semula animasi (Reflow)
+            void arElement.offsetWidth; 
+            
+            // Masukkan teks baharu
+            arElement.innerText = quranVerses[currentVerse].ar;
+            msElement.innerText = quranVerses[currentVerse].ms;
+            
+            // Masukkan class animasi semula
+            arElement.classList.add('fade-in');
+            msElement.classList.add('fade-in');
         }
-        setInterval(updateQuran, 300000);
+        
+        // Tukar setiap 2 minit (120,000 milisaat)
+        setInterval(updateQuran, 120000);
+
     </script>
 </body>
 </html>
