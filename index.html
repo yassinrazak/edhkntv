@@ -216,7 +216,7 @@
             <div class="solat-container">
                 <h2>WAKTU SOLAT<br>DAERAH PADANG TERAP</h2>
                 <div class="solat-grid" id="solat-times">
-                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun e-Solat JAKIM...</div>
+                    <div style="color: white; text-align: center; padding: 10px;">Memuat turun waktu solat KDH03...</div>
                 </div>
             </div>
         </div>
@@ -389,51 +389,48 @@
         setInterval(updateQuran, 120000); 
 
         // =========================================================================
-        // 3. WAKTU SOLAT & AZAN (INTEGRASI PORTAL RASMI e-SOLAT JAKIM: ZON KDH03)
+        // 3. WAKTU SOLAT & AZAN (KDH03 - PADANG TERAP)
         // =========================================================================
         let solatData = {};
         let azanPlayedToday = {};
 
         async function fetchWaktuSolat() {
-            // Kod Zon JAKIM: KDH03 = Padang Terap, Sik
-            const jakımUrl = "https://www.e-solat.gov.my/index.php?r=esolatApi/TimingByZone&zone=KDH03&period=today";
-            const fallbackUrl = "https://api.waktusolat.app/solat/KDH03";
+            const apiUrlPrimary = "https://api.waktusolat.app/solat/KDH03";
+            const apiUrlSecondary = "https://www.e-solat.gov.my/index.php?r=esolatApi/TimingByZone&zone=KDH03&period=today";
 
             try {
-                // Percubaan 1: Terus dari Portal e-Solat JAKIM
-                const response = await fetch(jakımUrl);
+                const response = await fetch(apiUrlPrimary);
                 const data = await response.json();
                 if (data && data.prayerTime && data.prayerTime.length > 0) {
-                    susunJadualJakim(data.prayerTime[0]);
+                    susunJadualSolat(data.prayerTime[0]);
                     return;
                 }
-                throw new Error("Respon e-Solat JAKIM kosong");
+                throw new Error("Pautan utama tidak mengembalikan maklumat");
             } catch (error) {
-                // Percubaan 2: Pelayan Sandaran (Cermin e-Solat) jika Portal JAKIM sibuk/CORS
                 try {
-                    const res = await fetch(fallbackUrl);
+                    const res = await fetch(apiUrlSecondary);
                     const data = await res.json();
                     if (data && data.prayerTime && data.prayerTime.length > 0) {
-                        susunJadualJakim(data.prayerTime[0]);
+                        susunJadualSolat(data.prayerTime[0]);
                     }
                 } catch(e) {
-                    console.error("Gagal mendapatkan data waktu solat:", e);
+                    console.error("Gagal memuat turun data waktu solat KDH03:", e);
                 }
             }
         }
 
-        function formatMasaJakim(timeStr) { 
+        function formatMasaSolat(timeStr) { 
             if(!timeStr) return "--:--";
             return timeStr.substring(0, 5); 
         }
 
-        function susunJadualJakim(timings) {
+        function susunJadualSolat(timings) {
             solatData = {
-                "Subuh": formatMasaJakim(timings.fajr), 
-                "Zohor": formatMasaJakim(timings.dhuhr),
-                "Asar": formatMasaJakim(timings.asr), 
-                "Maghrib": formatMasaJakim(timings.maghrib), 
-                "Isyak": formatMasaJakim(timings.isha)
+                "Subuh": formatMasaSolat(timings.fajr), 
+                "Zohor": formatMasaSolat(timings.dhuhr),
+                "Asar": formatMasaSolat(timings.asr), 
+                "Maghrib": formatMasaSolat(timings.maghrib), 
+                "Isyak": formatMasaSolat(timings.isha)
             };
             const container = document.getElementById('solat-times');
             container.innerHTML = ""; 
@@ -444,32 +441,62 @@
         }
         fetchWaktuSolat();
 
+        // SEMAK MASA UNTUK KELIPAN (5 MINIT SEBELUM & SELEPAS) BERSAMA AZAN
         function checkAzan() {
             const now = new Date();
-            const currentHourMin = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+
             for (let [name, time] of Object.entries(solatData)) {
-                if (currentHourMin === time && !azanPlayedToday[name]) {
-                    document.getElementById(`solat-${name}`).classList.add('active');
-                    if (name === "Subuh") document.getElementById('azan-subuh').play();
-                    else document.getElementById('azan-biasa').play();
-                    
-                    azanPlayedToday[name] = true;
-                    setTimeout(() => document.getElementById(`solat-${name}`).classList.remove('active'), 180000);
+                if (!time || time === "--:--") continue;
+
+                const [h, m] = time.split(':').map(Number);
+                const solatTotalMinutes = h * 60 + m;
+
+                const diffMinutes = currentTotalMinutes - solatTotalMinutes;
+                const solatElement = document.getElementById(`solat-${name}`);
+
+                // Kelip jika dalam julat [-5 minit sebelum, +5 minit selepas]
+                if (diffMinutes >= -5 && diffMinutes <= 5) {
+                    if (solatElement) solatElement.classList.add('active');
+
+                    if (diffMinutes === 0 && !azanPlayedToday[name]) {
+                        if (name === "Subuh") document.getElementById('azan-subuh').play();
+                        else document.getElementById('azan-biasa').play();
+                        azanPlayedToday[name] = true;
+                    }
+                } else {
+                    if (solatElement) solatElement.classList.remove('active');
                 }
             }
-            if (currentHourMin === "00:00" && azanPlayedToday["Subuh"] !== false) { 
+
+            if (now.getHours() === 0 && now.getMinutes() === 0 && azanPlayedToday["Subuh"] !== false) { 
                 for(let key in azanPlayedToday) azanPlayedToday[key] = false; 
                 fetchWaktuSolat();
             }
         }
-        setInterval(checkAzan, 20000);
+        setInterval(checkAzan, 10000); 
 
-        // 4. PENJADUALAN YOUTUBE (Format Bebas Sekatan YouTube-NoCookie)
-        const videoAsalID = "AaBF4oKLQZs";
-        
-        const linkAsal = `https://www.youtube-nocookie.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1&rel=0`;
-        let statusVideoSemasa = "";
+        // =========================================================================
+        // 4. PENJADUALAN YOUTUBE (Satu Playlist & Video Rawak)
+        // =========================================================================
+        // Masukkan Playlist ID anda di sini (Contoh: PLMDNGtzvgdI0)
+        const playlistID = "PLMDNGtzvgdI0"; 
 
+        function muatTurunVideoRawak() {
+            const player = document.getElementById('youtube-player');
+            if (!player) return;
+
+            // Memilih indeks video secara rawak dari 0 hingga 49
+            const indexRawak = Math.floor(Math.random() * 50);
+
+            // Parameter shuffle=1 & indexRawak membolehkan video diputar secara rawak
+            const linkPlaylist = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${playlistID}&autoplay=1&mute=1&loop=1&shuffle=1&index=${indexRawak}&enablejsapi=1&rel=0`;
+
+            player.src = linkPlaylist;
+        }
+
+        // Muat turun video rawak dari playlist semasa skrin mula dibuka
+        muatTurunVideoRawak();
     </script>
 </body>
 </html>
