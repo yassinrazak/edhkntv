@@ -29,7 +29,7 @@
             overflow: hidden;
         }
         
-/* ================= HEADER ================= */
+        /* ================= HEADER ================= */
         header {
             background-color: #1e293b;
             color: white;
@@ -46,9 +46,8 @@
             align-items: center;
             gap: 15px;
         }
-        /* SAIZ LOGO DIKEMASKINI DI SINI */
         .header-left img {
-            height: 40px; /* Saiz logo dikecilkan */
+            height: 40px; 
             width: auto;
             object-fit: contain;
             background: white;
@@ -220,7 +219,8 @@
 
     <header>
         <div class="header-left">
-            <img src="logo.png" alt="Logo" onerror="this.style.display='none'"> 
+            <!-- PAUTAN GOOGLE DRIVE: Gantikan teks LETAK_ID_GAMBAR_DI_SINI dengan ID fail Google Drive anda -->
+            <img src="https://drive.google.com/uc?export=view&id=1H9tWnlDLzJpuH8iLClw2zbRIRF0FXqtK" alt="Logo"> 
             <div class="header-title-text">UNIT KECEMASAN DAN TRAUMA HOSPITAL KUALA NERANG</div>
         </div>
         <div class="datetime-container">
@@ -387,19 +387,15 @@
         
         // Pautan Khas untuk waktu (1-2pm, 4-5pm, 7-8pm, 5-7am)
         // SILA GANTIKAN "ID_VIDEO_DI_SINI" DENGAN ID YOUTUBE PILIHAN ANDA
-        const linkKhas = "https://www.youtube.com/watch?v=eC4LfEVxvKg?autoplay=1&loop=1";
+        const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1";
         
         let statusVideoSemasa = "";
 
         function semakJadualYoutube() {
-            const jamSemasa = new Date().getHours(); // Format 24-Jam (0 hingga 23)
+            const jamSemasa = new Date().getHours(); 
             const player = document.getElementById('youtube-player');
             
             // Senarai masa khas (Jam 5, 6, 13, 16, 19)
-            // 5, 6 = 5:00 AM - 6:59 AM
-            // 13 = 1:00 PM - 1:59 PM
-            // 16 = 4:00 PM - 4:59 PM
-            // 19 = 7:00 PM - 7:59 PM
             const waktuKhas = [5, 6, 13, 16, 19];
             
             if (waktuKhas.includes(jamSemasa)) {
@@ -417,10 +413,8 @@
             }
         }
         
-        // Semak jadual youtube setiap 1 minit (60,000 milisaat)
         setInterval(semakJadualYoutube, 60000);
-        semakJadualYoutube(); // Panggil fungsi terus bila dibuka
-
+        semakJadualYoutube(); 
 
         // =======================================
         // 5. AYAT QURAN (Bertukar Setiap 2 Minit)
