@@ -466,27 +466,10 @@
 
         // 4. PENJADUALAN YOUTUBE (Format Bebas Sekatan YouTube-NoCookie)
         const videoAsalID = "AaBF4oKLQZs";
-        const videoKhasID = "eC4LfEVxvKg";
         
         const linkAsal = `https://www.youtube-nocookie.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1&rel=0`;
-        const linkKhas = `https://www.youtube-nocookie.com/embed/${videoKhasID}?autoplay=1&mute=1&loop=1&playlist=${videoKhasID}&enablejsapi=1&rel=0`;
         let statusVideoSemasa = "";
 
-        function semakJadualYoutube() {
-            const jamSemasa = new Date().getHours(); 
-            const player = document.getElementById('youtube-player');
-            const waktuKhas = [5, 6, 13, 16, 19]; 
-            
-            let targetLink = waktuKhas.includes(jamSemasa) ? linkKhas : linkAsal;
-            let targetStatus = waktuKhas.includes(jamSemasa) ? "khas" : "asal";
-
-            if (statusVideoSemasa !== targetStatus) { 
-                player.src = targetLink; 
-                statusVideoSemasa = targetStatus; 
-            }
-        }
-        setInterval(semakJadualYoutube, 60000); 
-        semakJadualYoutube(); 
     </script>
 </body>
 </html>
