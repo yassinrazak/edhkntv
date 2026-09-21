@@ -65,9 +65,10 @@
         
         /* ================= YOUTUBE (60%) ================= */
         .video-container { 
-            background: var(--card-bg); border-radius: 10px;
+            background: #000; border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0; overflow: hidden; 
             border: 2px solid white; height: 100%; display: flex; box-sizing: border-box;
+            position: relative;
         }
         .video-container iframe { width: 100%; height: 100%; border: none; }
         
@@ -223,7 +224,7 @@
         <!-- 60% YouTube -->
         <div class="panel-youtube">
             <div class="video-container">
-                <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe id="youtube-player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
@@ -313,9 +314,14 @@
         async function fetchPatientData() {
             if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
             try {
-                const response = await fetch(googleSheetUrl);
+                const response = await fetch(googleSheetUrl, { redirect: "follow" });
                 const data = await response.json();
                 
+                if(data.status === "error") {
+                    console.error("Apps Script Error:", data.message);
+                    return;
+                }
+
                 // Pesakit
                 document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
                 document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
@@ -344,13 +350,13 @@
                     semakSyifPetugas();
                 }
             } catch (error) {
-                console.error("Gagal baca Google Sheets:", error);
+                console.error("Gagal sambung ke Google Sheets:", error);
             }
         }
         setInterval(fetchPatientData, 10000); 
         fetchPatientData();
 
-        // SEMAK SYIF PEGAWAI BERTUGAS (8-15: Pagi, 15-22: Petang, 22-8: Malam)
+        // SEMAK SYIF PEGAWAI BERTUGAS
         function semakSyifPetugas() {
             if (!dataPetugas) return;
             const hour = new Date().getHours();
@@ -512,9 +518,12 @@
         }
         setInterval(checkAzan, 20000);
 
-        // 4. PENJADUALAN YOUTUBE
-        const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
-        const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1&playlist=eC4LfEVxvKg";
+        // 4. PENJADUALAN YOUTUBE (Format Pautan Dibaiki)
+        const videoAsalID = "AaBF4oKLQZs";
+        const videoKhasID = "eC4LfEVxvKg";
+        
+        const linkAsal = `https://www.youtube.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1`;
+        const linkKhas = `https://www.youtube.com/embed/${videoKhasID}?autoplay=1&mute=1&loop=1&playlist=${videoKhasID}&enablejsapi=1`;
         let statusVideoSemasa = "";
 
         function semakJadualYoutube() {
@@ -522,10 +531,12 @@
             const player = document.getElementById('youtube-player');
             const waktuKhas = [5, 6, 13, 16, 19]; 
             
-            if (waktuKhas.includes(jamSemasa)) {
-                if (statusVideoSemasa !== "khas") { player.src = linkKhas; statusVideoSemasa = "khas"; }
-            } else {
-                if (statusVideoSemasa !== "asal") { player.src = linkAsal; statusVideoSemasa = "asal"; }
+            let targetLink = waktuKhas.includes(jamSemasa) ? linkKhas : linkAsal;
+            let targetStatus = waktuKhas.includes(jamSemasa) ? "khas" : "asal";
+
+            if (statusVideoSemasa !== targetStatus) { 
+                player.src = targetLink; 
+                statusVideoSemasa = targetStatus; 
             }
         }
         setInterval(semakJadualYoutube, 60000); 
