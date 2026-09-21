@@ -63,15 +63,25 @@
         .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; }
         .right-panel { flex: 2; display: flex; flex-direction: column; height: 100%; }
         
-        /* ================= YOUTUBE ================= */
+        /* ================= VIDEO PLAYER ================= */
         .video-container { 
             background: #000; border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0; overflow: hidden; 
             border: 2px solid white; height: 100%; display: flex; box-sizing: border-box;
             position: relative;
         }
-        .video-container iframe { width: 100%; height: 100%; border: none; }
+        .video-container video { 
+            width: 100%; height: 100%; border: none; object-fit: contain; 
+        }
         
+        /* Overlay Unmute (Aktifkan Bunyi Sekali Klik) */
+        #audio-enable-btn {
+            position: absolute; top: 10px; left: 10px; z-index: 20;
+            background: rgba(251, 191, 36, 0.95); color: #000; padding: 8px 15px;
+            border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); border: none;
+        }
+
         /* ================= WAKTU SOLAT ================= */
         .solat-container {
             background-color: var(--islamic-dark);
@@ -204,12 +214,9 @@
 
     <div class="main-container">
         <div class="left-panel">
-            <div class="video-container">
-                <iframe id="youtube-player" 
-                        allow="autoplay; encrypted-media; picture-in-picture; accelerometer; clipboard-write; gyroscope" 
-                        referrerpolicy="strict-origin-when-cross-origin" 
-                        allowfullscreen>
-                </iframe>
+            <div class="video-container" id="video-box">
+                <button id="audio-enable-btn" onclick="enableAudio()">🔊 Tekan Untuk Aktifkan Bunyi Video</button>
+                <video id="drive-video-player" autoplay muted playsinline></video>
             </div>
         </div>
         <div class="right-panel">
@@ -224,7 +231,6 @@
 
     <!-- BAHAGIAN YANG BOLEH BERTUKAR (ROTATING SECTION) -->
     <div class="rotating-section" id="rotating-container">
-        
         <!-- WINDOW 1: STATUS PESAKIT KEKAL DI SINI -->
         <div class="window-content active" id="window-1">
             <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
@@ -236,7 +242,6 @@
                 <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
             </div>
         </div>
-
     </div>
 
     <!-- FOOTER QURAN / MUTIARA KATA DINAMIK -->
@@ -271,6 +276,18 @@
         let semuaFooterVerses = [];
         let currentVerseIndex = 0;
         let cachedMaklumanStr = "[]"; 
+        
+        // Pilihan Video Folder Google Drive
+        let driveVideos = [];
+        let currentVideoIndex = 0;
+        let isAudioUnmuted = false;
+
+        // Tetapan Mod Video Khas (10 Minit Sebelum Solat / Azan)
+        let isSpecialMode = false;
+        let isAzanPlaying = false;
+
+        // MASUKKAN GOOGLE DRIVE FILE ID UNTUK VIDEO KHAS (10 Minit Sebelum Solat)
+        const videoPanduanSolatID = "1H9tWnlDLzJpuH8iLClw2zbRIRF0FXqtK"; // Gantikan dengan ID Video Panduan Solat anda
 
         async function fetchPatientData() {
             if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
@@ -279,14 +296,12 @@
                 const data = await response.json();
                 
                 if (data && data.status === "success") {
-                    // Kemaskini Nombor Pesakit
                     document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
                     document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
                     document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "-";
                     document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
                     document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
 
-                    // Kemaskini Makluman (Lajur F)
                     if (data.makluman && Array.isArray(data.makluman)) {
                         let newMaklumanStr = JSON.stringify(data.makluman);
                         if (newMaklumanStr !== cachedMaklumanStr) {
@@ -296,9 +311,16 @@
                         }
                     }
 
-                    // Kemaskini Footer (Lajur G)
                     if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
                         semuaFooterVerses = data.footer;
+                    }
+
+                    if (data.videos && Array.isArray(data.videos) && data.videos.length > 0) {
+                        let oldLen = driveVideos.length;
+                        driveVideos = data.videos;
+                        if (oldLen === 0 && !isSpecialMode && !isAzanPlaying) {
+                            playNextDriveVideo();
+                        }
                     }
                 }
             } catch (error) {
@@ -308,7 +330,58 @@
         setInterval(fetchPatientData, 10000); 
         fetchPatientData();
 
-        // FUNGSI JANA MAKLUMAN RAWAK (MAX 5)
+        // 3. LOGIK PEMAIN VIDEO (BIASA & KHAS)
+        function playNextDriveVideo() {
+            if (isSpecialMode || isAzanPlaying || driveVideos.length === 0) return;
+
+            const player = document.getElementById('drive-video-player');
+            const currentVideo = driveVideos[currentVideoIndex];
+            
+            const directVideoUrl = `https://drive.google.com/uc?export=download&id=${currentVideo.id}`;
+            
+            player.src = directVideoUrl;
+            player.muted = !isAudioUnmuted;
+
+            player.play().catch(e => console.log("Autoplay ditahan pelayar:", e));
+
+            player.onended = () => {
+                if (!isSpecialMode && !isAzanPlaying) {
+                    currentVideoIndex = (currentVideoIndex + 1) % driveVideos.length;
+                    playNextDriveVideo();
+                }
+            };
+
+            player.onerror = () => {
+                if (!isSpecialMode && !isAzanPlaying) {
+                    currentVideoIndex = (currentVideoIndex + 1) % driveVideos.length;
+                    setTimeout(playNextDriveVideo, 2000);
+                }
+            };
+        }
+
+        // MEMAINkan VIDEO KHAS 10 MINIT SEBELUM SOLAT
+        function playSpecialPrePrayerVideo() {
+            if (isSpecialMode) return;
+            isSpecialMode = true;
+
+            const player = document.getElementById('drive-video-player');
+            const specialUrl = `https://drive.google.com/uc?export=download&id=${videoPanduanSolatID}`;
+
+            player.src = specialUrl;
+            player.loop = true; // Loop video panduan solat sehingga masuk waktu azan
+            player.muted = !isAudioUnmuted;
+            player.play().catch(e => console.log("Video Khas Autoplay Error:", e));
+        }
+
+        function enableAudio() {
+            const player = document.getElementById('drive-video-player');
+            isAudioUnmuted = true;
+            if (player) player.muted = false;
+            
+            const btn = document.getElementById('audio-enable-btn');
+            if (btn) btn.style.display = 'none';
+        }
+
         function janaPaparanMakluman() {
             const container = document.getElementById('rotating-container');
             document.querySelectorAll('.dynamic-window').forEach(el => el.remove());
@@ -337,13 +410,11 @@
             totalWindows = 1 + maklumanTerpilih.length;
         }
 
-        // ROTASI PENGUMUMAN (15 SAAT)
         function swapWindows() {
             const windowSekarang = document.getElementById('window-' + currentWindow);
             if(windowSekarang) windowSekarang.classList.remove('active');
             
             currentWindow++;
-            
             if (currentWindow > totalWindows) {
                 currentWindow = 1; 
                 setTimeout(() => { janaPaparanMakluman(); }, 1500);
@@ -359,7 +430,6 @@
         }
         setInterval(swapWindows, 15000); 
 
-        // ROTASI FOOTER DINAMIK (2 MINIT)
         function updateQuran() {
             if (semuaFooterVerses.length === 0) return;
 
@@ -389,7 +459,7 @@
         setInterval(updateQuran, 120000); 
 
         // =========================================================================
-        // 3. WAKTU SOLAT & AZAN (KDH03 - PADANG TERAP)
+        // 4. WAKTU SOLAT, KELIPAN & LAUNGAN AZAN
         // =========================================================================
         let solatData = {};
         let azanPlayedToday = {};
@@ -441,10 +511,10 @@
         }
         fetchWaktuSolat();
 
-        // SEMAK MASA UNTUK KELIPAN (5 MINIT SEBELUM & SELEPAS) BERSAMA AZAN
         function checkAzan() {
             const now = new Date();
             const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+            let isWithin10MinPrePrayer = false;
 
             for (let [name, time] of Object.entries(solatData)) {
                 if (!time || time === "--:--") continue;
@@ -452,51 +522,81 @@
                 const [h, m] = time.split(':').map(Number);
                 const solatTotalMinutes = h * 60 + m;
 
-                const diffMinutes = currentTotalMinutes - solatTotalMinutes;
+                const diffMinutes = currentTotalMinutes - solatTotalMinutes; // Beza minit
                 const solatElement = document.getElementById(`solat-${name}`);
 
                 // Kelip jika dalam julat [-5 minit sebelum, +5 minit selepas]
                 if (diffMinutes >= -5 && diffMinutes <= 5) {
                     if (solatElement) solatElement.classList.add('active');
-
-                    if (diffMinutes === 0 && !azanPlayedToday[name]) {
-                        if (name === "Subuh") document.getElementById('azan-subuh').play();
-                        else document.getElementById('azan-biasa').play();
-                        azanPlayedToday[name] = true;
-                    }
                 } else {
                     if (solatElement) solatElement.classList.remove('active');
                 }
+
+                // Pengesanan 10 minit sebelum solat (-10 minit hingga -1 minit)
+                if (diffMinutes >= -10 && diffMinutes < 0) {
+                    isWithin10MinPrePrayer = true;
+                }
+
+                // APABILA TEPAT MASUK WAKTU SOLAT (diffMinutes === 0)
+                if (diffMinutes === 0 && !azanPlayedToday[name]) {
+                    azanPlayedToday[name] = true;
+                    triggerAzanSequence(name);
+                }
             }
 
+            // Kendalikan penukaran ke Video Khas 10 minit sebelum solat
+            if (isWithin10MinPrePrayer && !isSpecialMode && !isAzanPlaying) {
+                playSpecialPrePrayerVideo();
+            } else if (!isWithin10MinPrePrayer && isSpecialMode && !isAzanPlaying) {
+                // Keluar dari mod khas jika masa telah berlalu
+                isSpecialMode = false;
+                currentVideoIndex = (currentVideoIndex + 1) % (driveVideos.length || 1);
+                playNextDriveVideo();
+            }
+
+            // Reset bendera pada tengah malam
             if (now.getHours() === 0 && now.getMinutes() === 0 && azanPlayedToday["Subuh"] !== false) { 
                 for(let key in azanPlayedToday) azanPlayedToday[key] = false; 
                 fetchWaktuSolat();
             }
         }
-        setInterval(checkAzan, 10000); 
+        setInterval(checkAzan, 5000); // Semak setiap 5 saat
 
-        // =========================================================================
-        // 4. PENJADUALAN YOUTUBE (Satu Playlist & Video Rawak)
-        // =========================================================================
-        // Masukkan Playlist ID anda di sini (Contoh: PLMDNGtzvgdI0)
-        const playlistID = "PLMDNGtzvgdI0"; 
+        // FUNGSI LAUNGAN AZAN & SAMBUNG VIDEO PLAYLIST SELEPAS TAMAT
+        function triggerAzanSequence(solatName) {
+            isAzanPlaying = true;
+            isSpecialMode = false;
 
-        function muatTurunVideoRawak() {
-            const player = document.getElementById('youtube-player');
-            if (!player) return;
+            const player = document.getElementById('drive-video-player');
+            if (player) {
+                player.pause(); // Hentikan video serta-merta
+            }
 
-            // Memilih indeks video secara rawak dari 0 hingga 49
-            const indexRawak = Math.floor(Math.random() * 50);
+            const azanAudio = (solatName === "Subuh") 
+                ? document.getElementById('azan-subuh') 
+                : document.getElementById('azan-biasa');
 
-            // Parameter shuffle=1 & indexRawak membolehkan video diputar secara rawak
-            const linkPlaylist = `https://www.youtube-nocookie.com/embed?listType=playlist&list=${playlistID}&autoplay=1&mute=1&loop=1&shuffle=1&index=${indexRawak}&enablejsapi=1&rel=0`;
+            if (azanAudio) {
+                azanAudio.currentTime = 0;
+                azanAudio.play().catch(e => console.log("Ralat main azan:", e));
 
-            player.src = linkPlaylist;
+                // Selepas azan selesai dimainkan, sambung semula video biasa
+                azanAudio.onended = () => {
+                    isAzanPlaying = false;
+                    const videoPlayer = document.getElementById('drive-video-player');
+                    if (videoPlayer) videoPlayer.loop = false;
+                    
+                    currentVideoIndex = (currentVideoIndex + 1) % (driveVideos.length || 1);
+                    playNextDriveVideo();
+                };
+            } else {
+                // Fallback jika audio tiada
+                setTimeout(() => {
+                    isAzanPlaying = false;
+                    playNextDriveVideo();
+                }, 180000); // 3 Minit
+            }
         }
-
-        // Muat turun video rawak dari playlist semasa skrin mula dibuka
-        muatTurunVideoRawak();
     </script>
 </body>
 </html>
