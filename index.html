@@ -42,53 +42,31 @@
             height: 70px;
             flex-shrink: 0; 
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         .header-left img {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-            background: white;
-            padding: 3px;
-            border-radius: 50%; 
+            height: 45px; width: auto; object-fit: contain;
+            background: white; padding: 3px; border-radius: 50%; 
         }
         .header-title-text { font-size: 19px; font-weight: 700; letter-spacing: 0.5px; }
         .datetime-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 6px;
-            font-size: 15px;
+            display: flex; gap: 10px; align-items: center;
+            background: rgba(255, 255, 255, 0.1); padding: 5px 15px;
+            border-radius: 6px; font-size: 15px;
         }
         .time { color: var(--islamic-gold); font-size: 20px; font-weight: bold; }
         
         /* ================= MAIN LAYOUT ================= */
         .main-container {
-            display: flex;
-            flex: 1; 
-            min-height: 0; 
-            padding: 15px;
-            gap: 15px;
+            display: flex; flex: 1; min-height: 0; padding: 15px; gap: 15px;
         }
         .left-panel { flex: 8; display: flex; flex-direction: column; height: 100%; }
         .right-panel { flex: 2; display: flex; flex-direction: column; height: 100%; }
         
         /* ================= YOUTUBE ================= */
         .video-container { 
-            background: var(--card-bg); 
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
-            padding: 0; 
-            overflow: hidden; 
-            border: 2px solid white; 
-            height: 100%; 
-            display: flex;
-            box-sizing: border-box;
+            background: var(--card-bg); border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0; overflow: hidden; 
+            border: 2px solid white; height: 100%; display: flex; box-sizing: border-box;
         }
         .video-container iframe { width: 100%; height: 100%; border: none; }
         
@@ -97,44 +75,21 @@
             background-color: var(--islamic-dark);
             background-image: radial-gradient(rgba(251, 191, 36, 0.15) 1px, transparent 1px), 
                               radial-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            border: 2px solid var(--islamic-gold);
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
-            padding: 15px;
-            height: 100%; 
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
+            background-size: 20px 20px; background-position: 0 0, 10px 10px;
+            border: 2px solid var(--islamic-gold); border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 15px;
+            height: 100%; box-sizing: border-box; display: flex; flex-direction: column;
         }
         .solat-container h2 { 
-            margin: 0 0 10px 0; 
-            color: var(--islamic-gold); 
-            text-align: center; 
-            font-size: 16px;
-            line-height: 1.3;
-            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
-            padding-bottom: 10px;
-            flex-shrink: 0; 
+            margin: 0 0 10px 0; color: var(--islamic-gold); text-align: center; 
+            font-size: 16px; line-height: 1.3; border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            padding-bottom: 10px; flex-shrink: 0; 
         }
-        .solat-grid { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-around; 
-            gap: 6px; 
-        }
+        .solat-grid { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 6px; }
         .solat-item {
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            color: white;
-            padding: 12px 5px; 
-            border-radius: 8px;
-            text-align: center; 
-            font-size: 16px; 
-            font-weight: 600;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(251, 191, 36, 0.3);
+            color: white; padding: 12px 5px; border-radius: 8px; text-align: center; 
+            font-size: 16px; font-weight: 600; transition: all 0.3s ease;
         }
         .solat-item.active { animation: berkelip-merah 1.5s infinite; color: white; font-weight: bold; }
         
@@ -144,29 +99,35 @@
             100% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; border-color: white; transform: scale(1.05); }
         }
         
-        /* ================= BAHAGIAN BERTUKAR (ROTATING WINDOWS) ================= */
+        /* ================= BAHAGIAN BERTUKAR (ANIMASI CROSS-FADE BARU) ================= */
         .rotating-section {
-            padding: 0 15px;
-            text-align: center;
+            position: relative; /* Wajib untuk absolute positioning */
             height: 170px; 
             flex-shrink: 0; 
             overflow: hidden; 
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            display: block;
         }
-        .window-content { display: none; animation: fadeInEffect 1s ease-in-out; height: 100%; }
-        .window-content.active { display: block; }
+        .window-content { 
+            position: absolute; /* Menyebabkan kotak bertindih di atas satu sama lain */
+            top: 0; left: 0; right: 0; height: 100%;
+            padding: 0 15px; /* Kekalkan margin tepi dari container */
+            opacity: 0; 
+            visibility: hidden;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .window-content.active { 
+            opacity: 1; 
+            visibility: visible;
+            z-index: 2; /* Papar di hadapan */
+        }
+        
         .section-title {
-            display: inline-block;
-            background: #1e293b;
-            color: white;
-            padding: 5px 20px;
-            border-radius: 15px;
-            font-size: 16px;
-            letter-spacing: 1px;
-            margin: 0 0 12px 0;
+            display: inline-block; background: #1e293b; color: white;
+            padding: 5px 20px; border-radius: 15px; font-size: 16px;
+            letter-spacing: 1px; margin: 0 0 12px 0;
         }
         
         /* Layout Zon Pesakit */
@@ -188,33 +149,23 @@
         .announcement-container { display: flex; justify-content: center; }
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: var(--islamic-gold);
-            padding: 0 30px;
-            border-radius: 10px;
-            font-size: 26px; 
-            font-weight: 600;
-            width: 100%; 
-            height: 95px; 
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: var(--islamic-gold); padding: 0 30px; border-radius: 10px;
+            font-size: 32px; /* Teks dibesarkan */
+            font-weight: 600; width: 100%; height: 95px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         /* ================= FOOTER QURAN ================= */
         footer { 
-            background-color: var(--islamic-dark); 
-            color: var(--islamic-gold); 
-            text-align: center; 
-            border-top: 3px solid var(--islamic-gold);
-            display: flex; flex-direction: column; justify-content: center;
+            background-color: var(--islamic-dark); color: var(--islamic-gold); text-align: center; 
+            border-top: 3px solid var(--islamic-gold); display: flex; flex-direction: column; justify-content: center;
             height: 130px; flex-shrink: 0; box-sizing: border-box; overflow: hidden; padding: 0 30px;
+            position: relative; z-index: 10;
         }
-        .quran-arabic { font-size: 32px; font-family: 'Amiri', serif; margin-bottom: 8px; line-height: 1.4; }
-        .quran-malay { font-size: 16px; color: white; }
-
+        .quran-arabic { font-size: 32px; font-family: 'Amiri', serif; margin-bottom: 8px; line-height: 1.4; transition: opacity 1.5s; }
+        .quran-malay { font-size: 16px; color: white; transition: opacity 1.5s; }
+        
         .fade-in { animation: fadeInEffect 1.5s ease-in-out; }
         @keyframes fadeInEffect {
             0% { opacity: 0; transform: translateY(10px); }
@@ -231,7 +182,7 @@
             .left-panel, .right-panel { flex: 1; width: 100%; }
             .video-container { min-height: 250px; }
             .solat-grid { grid-template-columns: repeat(3, 1fr); flex-direction: row; display: grid; }
-            .rotating-section { height: auto; padding-bottom: 20px;}
+            .rotating-section { height: 180px;}
             .zones-container, .announcement-container { flex-direction: column; grid-template-columns: repeat(2, 1fr); }
             .zone-card:last-child { grid-column: span 2; }
             .announcement-card { font-size: 20px; padding: 15px; height: auto;}
@@ -314,8 +265,11 @@
         // 2. GOOGLE SHEETS API (Pesakit & Makluman)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwp7EyAK5nTF2VUDIUNyaVc4QpcoWoi0bI3BKU0pvgTSA_6NoGjEKd-JGKv8KW7B3XU/exec"; 
         
-        let totalWindows = 1; // Mula dengan 1 window (Status Pesakit)
+        let totalWindows = 1; 
         let currentWindow = 1;
+        
+        // Memori Cache untuk menyemak sekiranya ada penambahan ayat di Google Sheet
+        let cachedMaklumanStr = "[]"; 
 
         async function fetchPatientData() {
             if(googleSheetUrl === "LETAK_URL_GOOGLE_SCRIPT_ANDA_DI_SINI") return;
@@ -323,34 +277,38 @@
                 const response = await fetch(googleSheetUrl);
                 const data = await response.json();
                 
-                // Kemaskini Nombor Pesakit
+                // Kemaskini Nombor Pesakit (Setiap 10 saat)
                 document.getElementById('count-red').innerText = data.merah;
                 document.getElementById('count-yellow').innerText = data.kuning;
                 document.getElementById('count-green').innerText = data.hijau;
                 document.getElementById('count-asthma').innerText = data.asthma;
                 document.getElementById('count-obs').innerText = data.obs;
 
-                // Kemaskini Window Makluman
+                // Kemaskini DOM Pengumuman HANYA jika data berbeza (Elakkan bug "hilang sekejap")
                 if (data.makluman && Array.isArray(data.makluman)) {
-                    janaPaparanMakluman(data.makluman);
+                    let newMaklumanStr = JSON.stringify(data.makluman);
+                    if (newMaklumanStr !== cachedMaklumanStr) {
+                        cachedMaklumanStr = newMaklumanStr;
+                        janaPaparanMakluman(data.makluman);
+                    }
                 }
             } catch (error) {
                 console.error("Gagal baca Google Sheets:", error);
             }
         }
-        setInterval(fetchPatientData, 10000); // Semak Google Sheet setiap 10 saat
+        setInterval(fetchPatientData, 10000); // Tarik data setiap 10 saat
         fetchPatientData();
 
-        // FUNGSI JANA MAKLUMAN AUTOMATIK DARI GOOGLE SHEET
+        // FUNGSI JANA MAKLUMAN AUTOMATIK
         function janaPaparanMakluman(senaraiMakluman) {
             const container = document.getElementById('rotating-container');
             
-            // Padam window makluman yang lama (jika ada update di Google Sheet)
+            // Padam window lama
             document.querySelectorAll('.dynamic-window').forEach(el => el.remove());
             
-            // Bina window baharu untuk setiap baris makluman
+            // Bina window baharu untuk SETIAP baris pengumuman di sheet
             senaraiMakluman.forEach((teks, index) => {
-                const windowId = index + 2; // Sebab window 1 adalah pesakit
+                const windowId = index + 2; 
                 const html = `
                     <div class="window-content dynamic-window" id="window-${windowId}">
                         <h2 class="section-title">MAKLUMAN / PENGUMUMAN</h2>
@@ -362,10 +320,9 @@
                 container.insertAdjacentHTML('beforeend', html);
             });
 
-            // Kemaskini jumlah keseluruhan window yang perlu diputar
             totalWindows = 1 + senaraiMakluman.length;
 
-            // Failsafe: Jika window sekarang lebih besar dari jumlah baru, reset ke 1
+            // Jika sedang papar window yang sudah dipadam, reset ke Pesakit
             if (currentWindow > totalWindows) {
                 document.querySelectorAll('.window-content').forEach(el => el.classList.remove('active'));
                 currentWindow = 1;
@@ -373,28 +330,28 @@
             }
         }
 
-        // FUNGSI ROTASI (TUKAR-TUKAR WINDOW)
+        // FUNGSI ROTASI DENGAN KESAN CROSS-FADE (Tiap 15 saat)
         function swapWindows() {
-            // Sembunyikan semua window (langkah selamat)
-            document.querySelectorAll('.window-content').forEach(el => el.classList.remove('active'));
+            // Hilangkan window sekarang
+            const windowSekarang = document.getElementById('window-' + currentWindow);
+            if(windowSekarang) windowSekarang.classList.remove('active');
             
-            // Bergerak ke paparan seterusnya
+            // Pergi ke paparan seterusnya
             currentWindow++;
             if (currentWindow > totalWindows) {
                 currentWindow = 1; 
             }
             
-            // Tunjukkan paparan baharu
-            const nextWindow = document.getElementById('window-' + currentWindow);
-            if (nextWindow) {
-                nextWindow.classList.add('active');
+            // Munculkan window baru (cross-fade automatik berlaku kerana 'position: absolute' CSS)
+            const windowSeterusnya = document.getElementById('window-' + currentWindow);
+            if (windowSeterusnya) {
+                windowSeterusnya.classList.add('active');
             } else {
                 currentWindow = 1;
                 document.getElementById('window-1').classList.add('active');
             }
         }
-        // Bertukar setiap 15 saat (15000 milisaat)
-        setInterval(swapWindows, 15000);
+        setInterval(swapWindows, 15000); // DIKUNCI KEPADA 15 SAAT
 
         // ====================================================
         // 3. WAKTU SOLAT & AZAN (e-SOLAT JAKIM : ZON KDH03)
@@ -476,7 +433,7 @@
         semakJadualYoutube(); 
 
         // ==========================================
-        // 5. AYAT QURAN (Tukar 2 minit)
+        // 5. AYAT QURAN (Tukar 2 minit dengan Crossfade)
         // ==========================================
         const quranVerses = [
             { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
@@ -488,15 +445,22 @@
         let currentVerseQuran = 0;
 
         function updateQuran() {
-            currentVerseQuran = (currentVerseQuran + 1) % quranVerses.length;
             const arElement = document.getElementById('quran-arabic');
             const msElement = document.getElementById('quran-malay');
             
-            arElement.classList.remove('fade-in'); msElement.classList.remove('fade-in');
-            void arElement.offsetWidth; 
-            arElement.innerText = quranVerses[currentVerseQuran].ar;
-            msElement.innerText = quranVerses[currentVerseQuran].ms;
-            arElement.classList.add('fade-in'); msElement.classList.add('fade-in');
+            // Hilangkan perlahan
+            arElement.style.opacity = 0;
+            msElement.style.opacity = 0;
+            
+            // Tukar teks sewaktu sedang halimunan, kemudian timbulkan semula
+            setTimeout(() => {
+                currentVerseQuran = (currentVerseQuran + 1) % quranVerses.length;
+                arElement.innerText = quranVerses[currentVerseQuran].ar;
+                msElement.innerText = quranVerses[currentVerseQuran].ms;
+                
+                arElement.style.opacity = 1;
+                msElement.style.opacity = 1;
+            }, 1000); // Tukar selepas 1 saat memudar
         }
         setInterval(updateQuran, 120000);
     </script>
