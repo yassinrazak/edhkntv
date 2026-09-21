@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
         
-        /* ================= HEADER ================= */
+        /* ================= HEADER (Compact) ================= */
         header {
             background-color: #1e293b;
             color: white;
@@ -133,7 +133,6 @@
             transition: all 0.3s ease;
         }
         
-        /* ====== ANIMASI MASUK WAKTU SOLAT ====== */
         .solat-item.active { 
             animation: berkelip-merah 1.5s infinite; 
             color: white;
@@ -145,11 +144,20 @@
             100% { background-color: #ff0000; box-shadow: 0 0 15px #ff0000; border-color: white; transform: scale(1.05); }
         }
         
-        /* ================= DATA PESAKIT ================= */
-        .patient-section {
+        /* ================= BAHAGIAN BERTUKAR (ROTATING WINDOWS) ================= */
+        .rotating-section {
             padding: 0 15px;
             text-align: center;
+            min-height: 150px; /* Kekalkan ruang supaya skrin tidak melompat bila bertukar */
         }
+        .window-content {
+            display: none; /* Sembunyikan semua secara default */
+            animation: fadeInEffect 1s ease-in-out;
+        }
+        .window-content.active {
+            display: block; /* Hanya paparkan yang aktif */
+        }
+
         .section-title {
             display: inline-block;
             background: #1e293b;
@@ -160,6 +168,8 @@
             letter-spacing: 1px;
             margin: 0 0 10px 0;
         }
+        
+        /* Layout Window 1: Pesakit */
         .zones-container { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); 
@@ -182,33 +192,54 @@
         .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
         .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
         
-        /* ================= FOOTER QURAN (Diperbesarkan) ================= */
+        /* Layout Window 2: Pengumuman */
+        .announcement-container {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 15px;
+            justify-content: center;
+        }
+        .announcement-card {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: var(--islamic-gold);
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* ================= FOOTER QURAN ================= */
         footer { 
             background-color: var(--islamic-dark); 
             color: var(--islamic-gold); 
-            padding: 20px 30px; /* Ruang atas bawah, kiri kanan ditambah */
+            padding: 20px 30px; 
             text-align: center; 
             border-top: 3px solid var(--islamic-gold);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 100px; /* Memastikan ketinggian minimum */
+            min-height: 100px; 
         }
         .quran-arabic { 
-            font-size: 34px; /* Saiz arab dibesarkan */
+            font-size: 34px; 
             font-family: 'Amiri', serif; 
-            margin-bottom: 10px; /* Ruang lebih antara Arab dan Rumi */
+            margin-bottom: 10px; 
             line-height: 1.4; 
         }
         .quran-malay { 
-            font-size: 18px; /* Saiz Rumi dibesarkan */
+            font-size: 18px; 
             color: white; 
         }
 
         .fade-in { animation: fadeInEffect 1.5s ease-in-out; }
         
         @keyframes fadeInEffect {
-            0% { opacity: 0; transform: translateY(5px); }
+            0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
@@ -221,15 +252,10 @@
             .left-panel, .right-panel { flex: 1; width: 100%; }
             .video-container iframe { min-height: 250px; }
             .solat-grid { grid-template-columns: repeat(3, 1fr); }
-            .zones-container { grid-template-columns: repeat(2, 1fr); }
+            .zones-container, .announcement-container { flex-direction: column; grid-template-columns: repeat(2, 1fr); }
             .zone-card:last-child { grid-column: span 2; }
-            .zone-card .count { font-size: 35px; }
             .quran-arabic { font-size: 26px; }
             .quran-malay { font-size: 15px; }
-        }
-        @media screen and (max-width: 480px) {
-            .solat-grid { grid-template-columns: repeat(2, 1fr); }
-            .solat-item:last-child { grid-column: span 2; }
         }
     </style>
 </head>
@@ -264,16 +290,57 @@
         </div>
     </div>
 
-    <div class="patient-section">
-        <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
-        <div class="zones-container">
-            <div class="zone-card zone-red"><h3>Zon Merah</h3><div class="count" id="count-red">-</div></div>
-            <div class="zone-card zone-yellow"><h3>Zon Kuning</h3><div class="count" id="count-yellow">-</div></div>
-            <div class="zone-card zone-green"><h3>Zon Hijau</h3><div class="count" id="count-green">-</div></div>
-            <div class="zone-card zone-asthma"><h3>Asthma Bay</h3><div class="count" id="count-asthma">-</div></div>
-            <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
+    <!-- BAHAGIAN YANG BOLEH BERTUKAR (ROTATING SECTION) -->
+    <div class="rotating-section">
+        
+        <!-- WINDOW 1: STATUS PESAKIT (Aktif secara lalai) -->
+        <div class="window-content active" id="window-1">
+            <h2 class="section-title">STATUS PESAKIT TERKINI</h2>
+            <div class="zones-container">
+                <div class="zone-card zone-red"><h3>Zon Merah</h3><div class="count" id="count-red">-</div></div>
+                <div class="zone-card zone-yellow"><h3>Zon Kuning</h3><div class="count" id="count-yellow">-</div></div>
+                <div class="zone-card zone-green"><h3>Zon Hijau</h3><div class="count" id="count-green">-</div></div>
+                <div class="zone-card zone-asthma"><h3>Asthma Bay</h3><div class="count" id="count-asthma">-</div></div>
+                <div class="zone-card zone-obs"><h3>Observation Bay</h3><div class="count" id="count-obs">-</div></div>
+            </div>
         </div>
+
+        <!-- WINDOW 2: MAKLUMAN / PENGUMUMAN LAIN -->
+        <div class="window-content" id="window-2">
+            <h2 class="section-title">MAKLUMAN KEPADA PELAWAT / WARIS</h2>
+            <div class="announcement-container">
+                <div class="announcement-card">
+                    Hanya SATU (1) orang pengiring sahaja yang dibenarkan untuk setiap pesakit.
+                </div>
+                <div class="announcement-card">
+                    Kes Kecemasan & Kritikal (Zon Merah) akan diberikan keutamaan. Harap bersabar menunggu giliran.
+                </div>
+                <div class="announcement-card">
+                    Untuk makluman, kes kecemasan dan kritikal (Zon Merah) akan diberikan keutamaan bagi memastikan rawatan segera dapat diberikan.
+                </div>
+                <div class="announcement-card">
+                    Mohon perhatian, masa menunggu mungkin berbeza bergantung kepada tahap kecemasan dan keadaan semasa di Jabatan Kecemasan.
+                </div>
+                <div class="announcement-card">
+                    Pesakit dan waris dimohon untuk tidak bimbang sekiranya pesakit lain dipanggil terlebih dahulu kerana keutamaan adalah berdasarkan tahap kecemasan.
+                </div>
+                <div class="announcement-card">
+                    Kami memahami kesulitan yang dialami sepanjang tempoh menunggu. Kerjasama dan kesabaran anda amat kami hargai.
+                </div>
+                <div class="announcement-card">
+                    Demi keselamatan bersama, semua pesakit dan waris dimohon mematuhi SOP serta memakai pelitup muka sepanjang berada di Zon Kecemasan.
+                </div>
+                 <div class="announcement-card">
+                    Sila amalkan kebersihan tangan dengan mencuci tangan secara berkala bagi mencegah penyebaran jangkitan.
+                </div>
+                 <div class="announcement-card">
+                    Tangan bersih, persekitaran lebih selamat. Jadikan amalan mencuci tangan sebagai rutin sepanjang berada di hospital.
+                </div>
+            </div>
+        </div>
+
     </div>
+    <!-- TAMAT BAHAGIAN BERTUKAR -->
 
     <footer>
         <div class="quran-arabic fade-in" id="quran-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
@@ -397,7 +464,6 @@
         // ==========================================
         // 4. PENJADUALAN YOUTUBE
         // ==========================================
-        
         const linkAsal = "https://www.youtube.com/embed/AaBF4oKLQZs?list=PLMDNGtzvgdI0&autoplay=1&loop=1";
         const linkKhas = "https://www.youtube.com/embed/eC4LfEVxvKg?autoplay=1&loop=1&playlist=eC4LfEVxvKg";
         
@@ -423,7 +489,33 @@
         setInterval(semakJadualYoutube, 60000); 
         semakJadualYoutube(); 
 
-        // 5. AYAT QURAN (Tukar 2 minit)
+        // ==========================================
+        // 5. ROTASI WINDOWS (Pesakit <-> Makluman)
+        // ==========================================
+        let currentWindow = 1;
+        const totalWindows = 2; // Jumlah window yang ada
+
+        function swapWindows() {
+            // Sembunyikan window sekarang
+            document.getElementById('window-' + currentWindow).classList.remove('active');
+            
+            // Pergi ke window seterusnya
+            currentWindow++;
+            if (currentWindow > totalWindows) {
+                currentWindow = 1; // Kembali ke window 1
+            }
+            
+            // Tunjukkan window baharu
+            document.getElementById('window-' + currentWindow).classList.add('active');
+        }
+        
+        // Tukar window secara automatik setiap 15 saat (15000 milisaat)
+        setInterval(swapWindows, 15000);
+
+
+        // ==========================================
+        // 6. AYAT QURAN (Tukar 2 minit)
+        // ==========================================
         const quranVerses = [
             { ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", ms: "Maka sesungguhnya bersama kesukaran itu ada kemudahan. (Al-Insyirah: 5)" },
             { ar: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ", ms: "Dan apabila aku sakit, maka Dialah yang menyembuhkan penyakitku. (Asy-Syu'ara: 80)" },
@@ -431,18 +523,18 @@
             { ar: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", ms: "Ketahuilah, dengan mengingati Allah hati akan menjadi tenang. (Ar-Ra'd: 28)" },
             { ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", ms: "Wahai orang yang beriman! Mohonlah pertolongan dengan sabar dan solat. (Al-Baqarah: 153)" }
         ];
-        let currentVerse = 0;
+        let currentVerseQuran = 0;
 
         function updateQuran() {
-            currentVerse = (currentVerse + 1) % quranVerses.length;
+            currentVerseQuran = (currentVerseQuran + 1) % quranVerses.length;
             const arElement = document.getElementById('quran-arabic');
             const msElement = document.getElementById('quran-malay');
             
             arElement.classList.remove('fade-in'); msElement.classList.remove('fade-in');
             void arElement.offsetWidth; 
             
-            arElement.innerText = quranVerses[currentVerse].ar;
-            msElement.innerText = quranVerses[currentVerse].ms;
+            arElement.innerText = quranVerses[currentVerseQuran].ar;
+            msElement.innerText = quranVerses[currentVerseQuran].ms;
             
             arElement.classList.add('fade-in'); msElement.classList.add('fade-in');
         }
