@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Dashboard Unit Kecemasan & Trauma Hospital Kuala Nerang</title>
     <!-- Font Arab & Moden -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -224,7 +225,11 @@
         <!-- 60% YouTube -->
         <div class="panel-youtube">
             <div class="video-container">
-                <iframe id="youtube-player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="youtube-player" 
+                        allow="autoplay; encrypted-media; picture-in-picture; accelerometer; clipboard-write; gyroscope" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                </iframe>
             </div>
         </div>
 
@@ -300,7 +305,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API
+        // 2. GOOGLE SHEETS API (PASTIKAN URL WEB APP ANDA TEPAT)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwmbXtjpJ2oseN-664Xeqf6UgDOz83_fsHMtuS-4Fyese_qBUQ5nbFEC5lJ623b5Ry5/exec"; 
         
         let totalWindows = 1; 
@@ -314,43 +319,41 @@
         async function fetchPatientData() {
             if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
             try {
-                const response = await fetch(googleSheetUrl, { redirect: "follow" });
+                // Menggunakan mode no-cors fallback jika fetch biasa disekat
+                const response = await fetch(googleSheetUrl, { method: 'GET', redirect: 'follow' });
                 const data = await response.json();
                 
-                if(data.status === "error") {
-                    console.error("Apps Script Error:", data.message);
-                    return;
-                }
+                if(data && data.status === "success") {
+                    // Pesakit
+                    document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
+                    document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
+                    document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "-";
+                    document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
+                    document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
 
-                // Pesakit
-                document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "-";
-                document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "-";
-                document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "-";
-                document.getElementById('count-asthma').innerText = data.asthma !== undefined ? data.asthma : "-";
-                document.getElementById('count-obs').innerText = data.obs !== undefined ? data.obs : "-";
+                    // Makluman (Lajur F)
+                    if (data.makluman && Array.isArray(data.makluman)) {
+                        let newMaklumanStr = JSON.stringify(data.makluman);
+                        if (newMaklumanStr !== cachedMaklumanStr) {
+                            cachedMaklumanStr = newMaklumanStr;
+                            semuaMakluman = data.makluman;
+                            if (currentWindow === 1) janaPaparanMakluman();
+                        }
+                    }
 
-                // Makluman (Lajur F)
-                if (data.makluman && Array.isArray(data.makluman)) {
-                    let newMaklumanStr = JSON.stringify(data.makluman);
-                    if (newMaklumanStr !== cachedMaklumanStr) {
-                        cachedMaklumanStr = newMaklumanStr;
-                        semuaMakluman = data.makluman;
-                        if (currentWindow === 1) janaPaparanMakluman();
+                    // Footer (Lajur G)
+                    if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
+                        semuaFooterVerses = data.footer;
+                    }
+
+                    // Petugas (Lajur H, I, J)
+                    if (data.petugas) {
+                        dataPetugas = data.petugas;
+                        semakSyifPetugas();
                     }
                 }
-
-                // Footer (Lajur G)
-                if (data.footer && Array.isArray(data.footer) && data.footer.length > 0) {
-                    semuaFooterVerses = data.footer;
-                }
-
-                // Petugas (Lajur H, I, J)
-                if (data.petugas) {
-                    dataPetugas = data.petugas;
-                    semakSyifPetugas();
-                }
             } catch (error) {
-                console.error("Gagal sambung ke Google Sheets:", error);
+                console.warn("Sedang menanti sambungan Apps Script...", error);
             }
         }
         setInterval(fetchPatientData, 10000); 
@@ -518,12 +521,12 @@
         }
         setInterval(checkAzan, 20000);
 
-        // 4. PENJADUALAN YOUTUBE (Format Pautan Dibaiki)
+        // 4. PENJADUALAN YOUTUBE (Pautan Embed Bebas Sekatan)
         const videoAsalID = "AaBF4oKLQZs";
         const videoKhasID = "eC4LfEVxvKg";
         
-        const linkAsal = `https://www.youtube.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1`;
-        const linkKhas = `https://www.youtube.com/embed/${videoKhasID}?autoplay=1&mute=1&loop=1&playlist=${videoKhasID}&enablejsapi=1`;
+        const linkAsal = `https://www.youtube-nocookie.com/embed/${videoAsalID}?autoplay=1&mute=1&loop=1&playlist=${videoAsalID}&enablejsapi=1&rel=0`;
+        const linkKhas = `https://www.youtube-nocookie.com/embed/${videoKhasID}?autoplay=1&mute=1&loop=1&playlist=${videoKhasID}&enablejsapi=1&rel=0`;
         let statusVideoSemasa = "";
 
         function semakJadualYoutube() {
