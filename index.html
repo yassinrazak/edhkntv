@@ -314,7 +314,6 @@
             
             document.getElementById('current-day').innerText = hariMelayu[now.getDay()];
             document.getElementById('current-date').innerText = `${now.getDate()} ${bulanMelayu[now.getMonth()]} ${now.getFullYear()}`;
-            // Memaparkan format jam, minit, dan saat secara langsung
             document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             semakSyifPetugas();
@@ -322,8 +321,8 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API
-        const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwmbXtjpJ2oseN-664Xeqf6UgDOz83_fsHMtuS-4Fyese_qBUQ5nbFEC5lJ623b5Ry5/exec"; 
+        // 2. GOOGLE SHEETS API (PASTIKAN GANTI DENGAN URL DEPLOYMENT BAHARU ANDA)
+        const googleSheetUrl = "https://script.google.com/macros/s/AKfycbw15WnBV6X1LYEmij08lrJDTWytjpj7j0_280gheG_UC3Fl8hVTRr7Hz_tn_o-Lq2g7/exec"; 
         
         let totalWindows = 1; 
         let currentWindow = 1;
