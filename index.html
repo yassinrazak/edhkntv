@@ -164,7 +164,6 @@
             letter-spacing: 1px; margin: 0 0 12px 0;
         }
         
-        /* Layout Zon Pesakit */
         .zones-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .zone-card { 
             color: white; padding: 12px 5px; border-radius: 10px; text-align: center; 
@@ -179,7 +178,6 @@
         .zone-asthma { background: linear-gradient(135deg, #3498db, #2980b9); }
         .zone-obs { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
         
-        /* Layout Pengumuman Dinamik */
         .announcement-container { display: flex; justify-content: center; }
         .announcement-card {
             background: linear-gradient(135deg, #2c3e50, #34495e);
@@ -199,6 +197,13 @@
         }
         .quran-arabic { font-size: 30px; font-family: 'Amiri', serif; margin-bottom: 6px; line-height: 1.3; transition: opacity 1.5s; }
         .quran-malay { font-size: 16px; color: white; transition: opacity 1.5s; }
+
+        /* KOTAK STATUS SAMBUNGAN (DEBUGGING) */
+        #status-bar {
+            position: fixed; bottom: 5px; right: 10px; background: rgba(0,0,0,0.85);
+            color: #fbbf24; padding: 4px 10px; border-radius: 5px; font-size: 11px; z-index: 999;
+            border: 1px solid #fbbf24;
+        }
 
         @media screen and (max-width: 900px) {
             body { height: auto; overflow: auto; }
@@ -220,6 +225,9 @@
     </style>
 </head>
 <body>
+
+    <!-- KOTAK DEBUGGER UNTUK LIHAT STATUS SAMBUNGAN -->
+    <div id="status-bar">Connecting to Apps Script...</div>
 
     <header>
         <div class="header-left">
@@ -317,7 +325,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. GOOGLE SHEETS API (PASTIKAN GANTI DENGAN URL APPS SCRIPT ANDA)
+        // 2. GOOGLE SHEETS API (PAUNAN DEPLOYMENT TERKINI)
         const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwfROSRI2nTtlO_wBZhoRX7FLASt7PhrK3X_M0k7G9LBxJqkPcT1Qv6xzmTv73txcSg/exec"; 
         
         let totalWindows = 1; 
@@ -328,9 +336,14 @@
         let currentVerseIndex = 0;
         let cachedMaklumanStr = "[]"; 
 
-        // TEKNIK JSONP INJECTION: Melepasi Sekatan CORS GitHub Pages 100%
+        // TEKNIK JSONP CALLBACK KHAS GITHUB PAGES
         function handleAppsScriptResponse(data) {
+            const statusBar = document.getElementById('status-bar');
             if (data && data.status === "success") {
+                statusBar.style.background = "#064e3b";
+                statusBar.style.color = "#fbbf24";
+                statusBar.innerText = "Online: Data Synced (" + new Date().toLocaleTimeString() + ")";
+
                 document.getElementById('count-red').innerText = data.merah !== undefined ? data.merah : "0";
                 document.getElementById('count-yellow').innerText = data.kuning !== undefined ? data.kuning : "0";
                 document.getElementById('count-green').innerText = data.hijau !== undefined ? data.hijau : "0";
@@ -354,20 +367,26 @@
                     dataPetugas = data.petugas;
                     semakSyifPetugas();
                 }
+            } else {
+                statusBar.style.background = "#b91c1c";
+                statusBar.innerText = "Error: Invalid Data Output";
             }
         }
 
         function fetchPatientData() {
-            if(!googleSheetUrl || googleSheetUrl.includes("LETAK_URL")) return;
+            const statusBar = document.getElementById('status-bar');
+            if(!googleSheetUrl) return;
 
-            // Padam skrip lama jika ada
             const oldScript = document.getElementById('jsonp-script');
             if (oldScript) oldScript.remove();
 
-            // Suntik skrip baru dinamik
             const script = document.createElement('script');
             script.id = 'jsonp-script';
             script.src = googleSheetUrl + "?callback=handleAppsScriptResponse&t=" + new Date().getTime();
+            script.onerror = function() {
+                statusBar.style.background = "#b91c1c";
+                statusBar.innerText = "Failed: Check Deployment Access (Anyone)";
+            };
             document.body.appendChild(script);
         }
         setInterval(fetchPatientData, 10000); 
